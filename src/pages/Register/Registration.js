@@ -8,7 +8,7 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import Button from "@mui/material/Button";
 import { useFormik } from "formik";
-import * as Yup from "yup";
+import { signup } from "../../components/validation";
 
 const Registration = () => {
   let [showpass, setShowpass] = useState("password");
@@ -33,21 +33,7 @@ const Registration = () => {
       console.log(values);
     },
     // Yup
-    validationSchema: Yup.object({
-      name: Yup.string()
-        .min(3, "Full Name Must Have 3 Character")
-        .max(10)
-        .required("Name is required*"),
-      email: Yup.string()
-        .email("Invalid email address")
-        .required("Email is required*"),
-      password: Yup.string()
-        .min(6, "Password must have 6 character")
-        .required("Password is required*"),
-      confirmpassword: Yup.string()
-        .oneOf([Yup.ref("password"), null], "Confirm Password must be match")
-        .required("Confirm Password is required*"),
-    }),
+    validationSchema: signup,
   });
 
   return (
