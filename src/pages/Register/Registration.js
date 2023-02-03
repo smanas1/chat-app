@@ -29,8 +29,9 @@ const Registration = () => {
       password: "",
       confirmpassword: "",
     },
-    onSubmit: (values) => {
+    onSubmit: (values, { resetForm }) => {
       console.log(values);
+      resetForm({ values: "" });
     },
     // Yup
     validationSchema: signup,

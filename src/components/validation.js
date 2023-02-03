@@ -4,7 +4,7 @@ export const signup = () =>
   Yup.object({
     name: Yup.string()
       .min(3, "Full Name Must Have 3 Character")
-      .max(10)
+      .max(20)
       .required("Name is required*"),
     email: Yup.string()
       .email("Invalid email address")
