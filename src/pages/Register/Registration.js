@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./registration.css";
 import Grid from "@mui/material/Grid";
 import Container from "@mui/material/Container";
@@ -16,11 +16,13 @@ import {
   sendEmailVerification,
 } from "firebase/auth";
 import { ToastContainer, toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const Registration = () => {
   const auth = getAuth();
-  let [showpass, setShowpass] = useState("password");
+  const [showpass, setShowpass] = useState("password");
   const [loading, setLoading] = useState(false);
+  let navigat = useNavigate();
   let handleShowPass = () => {
     if (showpass === "password") {
       setShowpass("text");
@@ -58,6 +60,9 @@ const Registration = () => {
           progress: undefined,
           theme: "light",
         });
+        setTimeout(() => {
+          navigat("/login");
+        }, 7000);
       });
 
       resetForm({ values: "" });
