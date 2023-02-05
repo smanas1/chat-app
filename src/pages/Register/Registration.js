@@ -9,9 +9,18 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import Button from "@mui/material/Button";
 import { useFormik } from "formik";
 import { signup } from "../../components/validation";
+import ScaleLoader from "react-spinners/ScaleLoader";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth";
+import { ToastContainer, toast } from "react-toastify";
 
 const Registration = () => {
+  const auth = getAuth();
   let [showpass, setShowpass] = useState("password");
+  const [loading, setLoading] = useState(false);
   let handleShowPass = () => {
     if (showpass === "password") {
       setShowpass("text");
@@ -30,7 +39,27 @@ const Registration = () => {
       confirmpassword: "",
     },
     onSubmit: (values, { resetForm }) => {
-      console.log(values);
+      // Sign up new users
+      setLoading(true);
+      createUserWithEmailAndPassword(
+        auth,
+        formik.values.email,
+        formik.values.password
+      ).then(() => {
+        setLoading(false);
+        sendEmailVerification(auth.currentUser);
+        toast.success("Please Verify Your Email !", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      });
+
       resetForm({ values: "" });
     },
     // Yup
@@ -40,6 +69,7 @@ const Registration = () => {
   return (
     <>
       <Container fixed>
+        <ToastContainer />
         <Grid className="box" container spacing={2}>
           <Grid item xs={6}>
             <Box className="froms">
@@ -159,9 +189,15 @@ const Registration = () => {
                   </Box>
 
                   <Box className="signup-btn">
-                    <Button type="submit" variant="contained">
-                      Sign Up
-                    </Button>
+                    {loading ? (
+                      <Button className="loader-btn" variant="contained">
+                        <ScaleLoader color="#ffffff" height={21} />
+                      </Button>
+                    ) : (
+                      <Button type="submit" variant="contained">
+                        Sign Up
+                      </Button>
+                    )}
                   </Box>
                 </Box>
               </form>
