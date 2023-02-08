@@ -47,23 +47,27 @@ const Registration = () => {
         auth,
         formik.values.email,
         formik.values.password
-      ).then(() => {
-        setLoading(false);
-        sendEmailVerification(auth.currentUser);
-        toast.success("Please Verify Your Email !", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: true,
-          progress: undefined,
-          theme: "light",
+      )
+        .then(() => {
+          setLoading(false);
+          sendEmailVerification(auth.currentUser);
+          toast.success("Please Verify Your Email !", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: false,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+          });
+          setTimeout(() => {
+            navigat("/login");
+          }, 6500);
+        })
+        .catch((error) => {
+          console.log(error.code);
         });
-        setTimeout(() => {
-          navigat("/login");
-        }, 7000);
-      });
 
       resetForm({ values: "" });
     },
