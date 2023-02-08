@@ -80,7 +80,9 @@ li {
   color: var(--read-orange);
   cursor: pointer;
 }
-
+.si-link span a {
+  color: var(--read-orange);
+}
 .sugnup-img {
   width: 100%;
 }

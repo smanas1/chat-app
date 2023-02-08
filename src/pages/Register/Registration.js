@@ -16,7 +16,7 @@ import {
   sendEmailVerification,
 } from "firebase/auth";
 import { ToastContainer, toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Registration = () => {
   const auth = getAuth();
@@ -213,7 +213,10 @@ const Registration = () => {
             </Box>
             <Box className="si-link">
               <p>
-                Already have an account ? <span>Sign In</span>
+                Already have an account ?
+                <span>
+                  <Link to="/login"> Sign In</Link>
+                </span>
               </p>
             </Box>
           </Grid>
