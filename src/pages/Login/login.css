@@ -1,0 +1,13 @@
+.log-header h2 {
+  text-align: center;
+  width: 70%;
+}
+
+.login-avatar {
+  text-align: center;
+  width: 70%;
+}
+
+.login-avatar img {
+  width: 80px;
+}

@@ -16,3 +16,12 @@ export const signup = () =>
       .oneOf([Yup.ref("password"), null], "Confirm Password must be match")
       .required("Confirm Password is required*"),
   });
+
+export const signin = Yup.object({
+  email: Yup.string()
+    .email("Invalid email address")
+    .required("Email is required*"),
+  password: Yup.string()
+    .min(6, "Password must have 6 character")
+    .required("Password is required*"),
+});
