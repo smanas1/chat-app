@@ -89,9 +89,26 @@ const Login = () => {
                   <img src="../img/login-avatar.png" alt="" />
                 </picture>
               </Box>
+
               <Box className="reg-header log-header">
                 <h2>Login to your account!</h2>
               </Box>
+
+              <Box className="login-auth">
+                <Box className="auth-google">
+                  <picture>
+                    <img src="../img/google.png" alt="" />
+                  </picture>
+                  <span>Login with Google</span>
+                </Box>
+                <Box className="auth-google auth-fb">
+                  <picture>
+                    <img src="../img/facebook.png" alt="" />
+                  </picture>
+                  <span>Login with facebook</span>
+                </Box>
+              </Box>
+
               <form onSubmit={formik.handleSubmit}>
                 <Box className="inputs">
                   <Box className="input-box">

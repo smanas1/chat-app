@@ -24,6 +24,7 @@ li {
   --black: #000;
   --white: #fff;
   --error: #f55050;
+  --border-color: rgba(3, 1, 76, 0.2);
 }
 
 /* Box Design */
