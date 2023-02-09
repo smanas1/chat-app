@@ -159,9 +159,6 @@ const Registration = () => {
                       }}
                       value={formik.values.password}
                     />
-                    {formik.errors.password && formik.touched.password ? (
-                      <p>{formik.errors.password}</p>
-                    ) : null}
                     <Box className="input-icon" onClick={handleShowPass}>
                       {showpass === "password" ? (
                         <VisibilityOffIcon />
@@ -169,6 +166,9 @@ const Registration = () => {
                         <VisibilityIcon />
                       )}
                     </Box>
+                    {formik.errors.password && formik.touched.password ? (
+                      <p>{formik.errors.password}</p>
+                    ) : null}
                   </Box>
                   <Box className="input-box">
                     <TextField

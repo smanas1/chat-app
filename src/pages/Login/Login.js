@@ -10,14 +10,21 @@ import Button from "@mui/material/Button";
 import { useFormik } from "formik";
 import { signin } from "../../components/validation";
 import ScaleLoader from "react-spinners/ScaleLoader";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from "firebase/auth";
 import { ToastContainer, toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
   const auth = getAuth();
+  const googleProvider = new GoogleAuthProvider();
   const [showpass, setShowpass] = useState("password");
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   let handleShowPass = () => {
     if (showpass === "password") {
@@ -25,6 +32,27 @@ const Login = () => {
     } else {
       setShowpass("password");
     }
+  };
+
+  // google signUP
+  const handleGoogle = () => {
+    signInWithPopup(auth, googleProvider)
+      .then(() => {
+        navigate("/");
+      })
+      .catch((error) => {
+        console.log(error.code);
+        toast.error("Login Failed Please Try Again", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+          theme: "light",
+        });
+      });
   };
 
   // Formik
@@ -43,22 +71,37 @@ const Login = () => {
         formik.values.password
       )
         .then(() => {
-          console.log("hoiche");
+          navigate("/");
           setLoading(false);
-          toast.success("Login successfull !", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: false,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
         })
 
         .catch((error) => {
           console.log(error.code);
+          if (error.code.includes("auth/user-not-found")) {
+            toast.error("Invalid Email", {
+              position: "top-right",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: false,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+          }
+          if (error.code.includes("auth/wrong-password")) {
+            toast.error("Wrong Password", {
+              position: "top-right",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: false,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+          }
+          setLoading(false);
         });
 
       resetForm({ values: "" });
@@ -95,7 +138,7 @@ const Login = () => {
               </Box>
 
               <Box className="login-auth">
-                <Box className="auth-google">
+                <Box className="auth-google" onClick={handleGoogle}>
                   <picture>
                     <img src="../img/google.png" alt="" />
                   </picture>
