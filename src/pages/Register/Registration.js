@@ -199,7 +199,11 @@ const Registration = () => {
 
                   <Box className="signup-btn">
                     {loading ? (
-                      <Button className="loader-btn" variant="contained">
+                      <Button
+                        disabled
+                        className="loader-btn"
+                        variant="contained"
+                      >
                         <ScaleLoader color="#ffffff" height={21} />
                       </Button>
                     ) : (
