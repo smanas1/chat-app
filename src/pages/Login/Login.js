@@ -15,6 +15,7 @@ import {
   signInWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
+  FacebookAuthProvider,
 } from "firebase/auth";
 import { ToastContainer, toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
@@ -25,6 +26,7 @@ const Login = () => {
   const [showpass, setShowpass] = useState("password");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const fbprovider = new FacebookAuthProvider();
 
   let handleShowPass = () => {
     if (showpass === "password") {
@@ -32,6 +34,17 @@ const Login = () => {
     } else {
       setShowpass("password");
     }
+  };
+  // FB Signup
+
+  const handleFacebook = () => {
+    signInWithPopup(auth, fbprovider)
+      .then(() => {
+        console.log("ha");
+      })
+      .catch((error) => {
+        console.log(error.code);
+      });
   };
 
   // google signUP
@@ -144,7 +157,7 @@ const Login = () => {
                   </picture>
                   <span>Login with Google</span>
                 </Box>
-                <Box className="auth-google auth-fb">
+                <Box className="auth-google auth-fb" onClick={handleFacebook}>
                   <picture>
                     <img src="../img/facebook.png" alt="" />
                   </picture>
