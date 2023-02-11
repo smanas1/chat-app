@@ -8,7 +8,7 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import Button from "@mui/material/Button";
 import { useFormik } from "formik";
-import { signup } from "../../components/validation";
+import { signup } from "../../Validation/validation";
 import ScaleLoader from "react-spinners/ScaleLoader";
 import {
   getAuth,

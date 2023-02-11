@@ -1,18 +1,35 @@
 import Registration from "./pages/Register/Registration";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  createBrowserRouter,
+  createRoutesFromElements,
+  Route,
+  RouterProvider,
+  Routes,
+} from "react-router-dom";
 import Login from "./pages/Login/Login";
 import Home from "./pages/Home/Home";
+import Notloggedinuser from "./pages/Privateroute/Notloggedin";
+import Loggedinuser from "./pages/Privateroute/Loggedinuser";
 
 function App() {
-  return (
-    <>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Home />}></Route>
+  const router = createBrowserRouter(
+    createRoutesFromElements(
+      <Route>
+        <Route element={<Notloggedinuser />}>
           <Route path="/register" element={<Registration />}></Route>
           <Route path="/login" element={<Login />}></Route>
-        </Routes>
-      </Router>
+        </Route>
+        <Route element={<Loggedinuser />}>
+          <Route path="/" element={<Home />}></Route>
+        </Route>
+      </Route>
+    )
+  );
+
+  return (
+    <>
+      <RouterProvider router={router}></RouterProvider>
     </>
   );
 }

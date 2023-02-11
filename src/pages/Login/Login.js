@@ -8,7 +8,7 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import Button from "@mui/material/Button";
 import { useFormik } from "formik";
-import { signin } from "../../components/validation";
+import { signin } from "../../Validation/validation";
 import ScaleLoader from "react-spinners/ScaleLoader";
 import {
   getAuth,
@@ -18,7 +18,7 @@ import {
   FacebookAuthProvider,
 } from "firebase/auth";
 import { ToastContainer, toast } from "react-toastify";
-import { Link, useNavigate } from "react-router-dom";
+import { json, Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
   const auth = getAuth();
@@ -41,6 +41,7 @@ const Login = () => {
     signInWithPopup(auth, fbprovider)
       .then(() => {
         console.log("ha");
+        navigate("/");
       })
       .catch((error) => {
         console.log(error.code);
@@ -83,37 +84,38 @@ const Login = () => {
         formik.values.email,
         formik.values.password
       )
-        .then(() => {
+        .then(({ user }) => {
+          localStorage.setItem("users", JSON.stringify(user));
           navigate("/");
           setLoading(false);
         })
 
         .catch((error) => {
           console.log(error.code);
-          if (error.code.includes("auth/user-not-found")) {
-            toast.error("Invalid Email", {
-              position: "top-right",
-              autoClose: 3000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: false,
-              draggable: true,
-              progress: undefined,
-              theme: "light",
-            });
-          }
-          if (error.code.includes("auth/wrong-password")) {
-            toast.error("Wrong Password", {
-              position: "top-right",
-              autoClose: 3000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: false,
-              draggable: true,
-              progress: undefined,
-              theme: "light",
-            });
-          }
+          // if (error.code.includes("auth/user-not-found")) {
+          //   toast.error("Invalid Email", {
+          //     position: "top-right",
+          //     autoClose: 3000,
+          //     hideProgressBar: false,
+          //     closeOnClick: true,
+          //     pauseOnHover: false,
+          //     draggable: true,
+          //     progress: undefined,
+          //     theme: "light",
+          //   });
+          // }
+          // if (error.code.includes("auth/wrong-password")) {
+          //   toast.error("Wrong Password", {
+          //     position: "top-right",
+          //     autoClose: 3000,
+          //     hideProgressBar: false,
+          //     closeOnClick: true,
+          //     pauseOnHover: false,
+          //     draggable: true,
+          //     progress: undefined,
+          //     theme: "light",
+          //   });
+          // }
           setLoading(false);
         });
 
@@ -236,7 +238,7 @@ const Login = () => {
                       </Button>
                     ) : (
                       <Button type="submit" variant="contained">
-                        Sign Up
+                        Login
                       </Button>
                     )}
                   </Box>
