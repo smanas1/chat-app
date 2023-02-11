@@ -25,7 +25,7 @@ const Login = () => {
   const googleProvider = new GoogleAuthProvider();
   const [showpass, setShowpass] = useState("password");
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+  const navigat = useNavigate();
   const fbprovider = new FacebookAuthProvider();
 
   let handleShowPass = () => {
@@ -41,7 +41,7 @@ const Login = () => {
     signInWithPopup(auth, fbprovider)
       .then(() => {
         console.log("ha");
-        navigate("/");
+        navigat("/");
       })
       .catch((error) => {
         console.log(error.code);
@@ -52,7 +52,7 @@ const Login = () => {
   const handleGoogle = () => {
     signInWithPopup(auth, googleProvider)
       .then(() => {
-        navigate("/");
+        navigat("/");
       })
       .catch((error) => {
         console.log(error.code);
@@ -86,36 +86,37 @@ const Login = () => {
       )
         .then(({ user }) => {
           localStorage.setItem("users", JSON.stringify(user));
-          navigate("/");
           setLoading(false);
+          console.log("ha");
+          navigat("/");
         })
 
         .catch((error) => {
           console.log(error.code);
-          // if (error.code.includes("auth/user-not-found")) {
-          //   toast.error("Invalid Email", {
-          //     position: "top-right",
-          //     autoClose: 3000,
-          //     hideProgressBar: false,
-          //     closeOnClick: true,
-          //     pauseOnHover: false,
-          //     draggable: true,
-          //     progress: undefined,
-          //     theme: "light",
-          //   });
-          // }
-          // if (error.code.includes("auth/wrong-password")) {
-          //   toast.error("Wrong Password", {
-          //     position: "top-right",
-          //     autoClose: 3000,
-          //     hideProgressBar: false,
-          //     closeOnClick: true,
-          //     pauseOnHover: false,
-          //     draggable: true,
-          //     progress: undefined,
-          //     theme: "light",
-          //   });
-          // }
+          if (error.code.includes("auth/user-not-found")) {
+            toast.error("Invalid Email", {
+              position: "top-right",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: false,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+          }
+          if (error.code.includes("auth/wrong-password")) {
+            toast.error("Wrong Password", {
+              position: "top-right",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: false,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+          }
           setLoading(false);
         });
 

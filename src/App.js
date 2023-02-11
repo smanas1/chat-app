@@ -13,23 +13,33 @@ import Notloggedinuser from "./pages/Privateroute/Notloggedin";
 import Loggedinuser from "./pages/Privateroute/Loggedinuser";
 
 function App() {
-  const router = createBrowserRouter(
-    createRoutesFromElements(
-      <Route>
-        <Route element={<Notloggedinuser />}>
-          <Route path="/register" element={<Registration />}></Route>
-          <Route path="/login" element={<Login />}></Route>
-        </Route>
-        <Route element={<Loggedinuser />}>
-          <Route path="/" element={<Home />}></Route>
-        </Route>
-      </Route>
-    )
-  );
+  // const router = createBrowserRouter(
+  //   createRoutesFromElements(
+  //     <Route>
+  //       <Route element={<Notloggedinuser />}>
+  //         <Route path="/register" element={<Registration />}></Route>
+  //         <Route path="/login" element={<Login />}></Route>
+  //       </Route>
+  //       <Route element={<Loggedinuser />}>
+  //         <Route path="/" element={<Home />}></Route>
+  //       </Route>
+  //     </Route>
+  //   )
+  // );
 
   return (
     <>
-      <RouterProvider router={router}></RouterProvider>
+      <Router>
+        <Routes>
+          <Route element={<Notloggedinuser />}>
+            <Route path="/register" element={<Registration />}></Route>
+            <Route path="/login" element={<Login />}></Route>
+          </Route>
+          <Route element={<Loggedinuser />}>
+            <Route path="/" element={<Home />}></Route>
+          </Route>
+        </Routes>
+      </Router>
     </>
   );
 }
