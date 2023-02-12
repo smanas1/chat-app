@@ -20,6 +20,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 const Registration = () => {
   const auth = getAuth();
+  const [dbtn, setDbtn] = useState("contained");
   const [showpass, setShowpass] = useState("password");
   const [loading, setLoading] = useState(false);
   let navigat = useNavigate();
@@ -49,11 +50,13 @@ const Registration = () => {
         formik.values.password
       )
         .then(() => {
+          setDbtn("disabled");
+          resetForm({ values: "" });
           setLoading(false);
           sendEmailVerification(auth.currentUser);
           toast.success("Please Verify Your Email !", {
             position: "top-right",
-            autoClose: 5000,
+            autoClose: 3000,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: false,
@@ -63,13 +66,25 @@ const Registration = () => {
           });
           setTimeout(() => {
             navigat("/login");
-          }, 6500);
+          }, 3500);
         })
         .catch((error) => {
-          console.log(error.code);
-        });
+          if (error.code.includes("auth/email-already-in-use")) {
+            toast.error("This Email Already In Use", {
+              position: "top-right",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: false,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+          }
 
-      resetForm({ values: "" });
+          console.log(error.code);
+          setLoading(false);
+        });
     },
     // Yup
     validationSchema: signup,
@@ -199,15 +214,15 @@ const Registration = () => {
 
                   <Box className="signup-btn">
                     {loading ? (
-                      <Button
-                        disabled
-                        className="loader-btn"
-                        variant="contained"
-                      >
+                      <Button className="loader-btn" variant="disabled">
                         <ScaleLoader color="#ffffff" height={21} />
                       </Button>
                     ) : (
-                      <Button type="submit" variant="contained">
+                      <Button
+                        style={{ color: "#fff" }}
+                        type="submit"
+                        variant={dbtn}
+                      >
                         Sign Up
                       </Button>
                     )}

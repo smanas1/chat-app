@@ -19,12 +19,16 @@ import {
 } from "firebase/auth";
 import { ToastContainer, toast } from "react-toastify";
 import { json, Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { Loginuser } from "../../Redux/Slice/LoginSlice";
 
 const Login = () => {
   const auth = getAuth();
+  const [dbtn, setDbtn] = useState("contained");
   const googleProvider = new GoogleAuthProvider();
   const [showpass, setShowpass] = useState("password");
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
   const navigat = useNavigate();
   const fbprovider = new FacebookAuthProvider();
 
@@ -85,14 +89,16 @@ const Login = () => {
         formik.values.password
       )
         .then(({ user }) => {
+          setDbtn("disabled");
+          resetForm({ values: "" });
+          dispatch(Loginuser(user));
           localStorage.setItem("users", JSON.stringify(user));
           setLoading(false);
-          console.log("ha");
           navigat("/");
         })
 
         .catch((error) => {
-          console.log(error.code);
+          setLoading(false);
           if (error.code.includes("auth/user-not-found")) {
             toast.error("Invalid Email", {
               position: "top-right",
@@ -117,10 +123,7 @@ const Login = () => {
               theme: "light",
             });
           }
-          setLoading(false);
         });
-
-      resetForm({ values: "" });
     },
     // Yup
     validationSchema: signin,
@@ -230,15 +233,11 @@ const Login = () => {
 
                   <Box className="signup-btn">
                     {loading ? (
-                      <Button
-                        disabled
-                        className="loader-btn"
-                        variant="contained"
-                      >
+                      <Button className="loader-btn" variant="disabled">
                         <ScaleLoader color="#ffffff" height={21} />
                       </Button>
                     ) : (
-                      <Button type="submit" variant="contained">
+                      <Button type="submit" variant={dbtn}>
                         Login
                       </Button>
                     )}

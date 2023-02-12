@@ -1,4 +1,3 @@
-import Registration from "./pages/Register/Registration";
 import {
   BrowserRouter as Router,
   createBrowserRouter,
@@ -11,25 +10,26 @@ import Login from "./pages/Login/Login";
 import Home from "./pages/Home/Home";
 import Notloggedinuser from "./pages/Privateroute/Notloggedin";
 import Loggedinuser from "./pages/Privateroute/Loggedinuser";
+import Registration from "./pages/Register/Registration";
 
 function App() {
-  // const router = createBrowserRouter(
-  //   createRoutesFromElements(
-  //     <Route>
-  //       <Route element={<Notloggedinuser />}>
-  //         <Route path="/register" element={<Registration />}></Route>
-  //         <Route path="/login" element={<Login />}></Route>
-  //       </Route>
-  //       <Route element={<Loggedinuser />}>
-  //         <Route path="/" element={<Home />}></Route>
-  //       </Route>
-  //     </Route>
-  //   )
-  // );
+  const router = createBrowserRouter(
+    createRoutesFromElements(
+      <Route>
+        <Route element={<Notloggedinuser />}>
+          <Route path="/register" element={<Registration />}></Route>
+          <Route path="/login" element={<Login />}></Route>
+        </Route>
+        <Route element={<Loggedinuser />}>
+          <Route path="/" element={<Home />}></Route>
+        </Route>
+      </Route>
+    )
+  );
 
   return (
     <>
-      <Router>
+      {/* <Router>
         <Routes>
           <Route element={<Notloggedinuser />}>
             <Route path="/register" element={<Registration />}></Route>
@@ -39,7 +39,9 @@ function App() {
             <Route path="/" element={<Home />}></Route>
           </Route>
         </Routes>
-      </Router>
+      </Router> */}
+
+      <RouterProvider router={router}></RouterProvider>
     </>
   );
 }

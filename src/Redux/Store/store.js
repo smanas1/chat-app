@@ -5,6 +5,10 @@ const store = configureStore({
   reducer: {
     login: authSlice,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
 });
 
 export default store;
