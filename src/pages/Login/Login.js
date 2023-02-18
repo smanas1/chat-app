@@ -43,8 +43,10 @@ const Login = () => {
 
   const handleFacebook = () => {
     signInWithPopup(auth, fbprovider)
-      .then(() => {
-        console.log("ha");
+      .then((f) => {
+        console.log(f.user);
+        dispatch(Loginuser(f.user));
+        localStorage.setItem("users", JSON.stringify(f.user));
         navigat("/");
       })
       .catch((error) => {
@@ -55,7 +57,10 @@ const Login = () => {
   // google signUP
   const handleGoogle = () => {
     signInWithPopup(auth, googleProvider)
-      .then(() => {
+      .then((g) => {
+        console.log(g.user);
+        dispatch(Loginuser(g.user));
+        localStorage.setItem("users", JSON.stringify(g.user));
         navigat("/");
       })
       .catch((error) => {
