@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./login.css";
+import "../Forgetpass/forgetpass.css";
 import Grid from "@mui/material/Grid";
 import Container from "@mui/material/Container";
 import TextField from "@mui/material/TextField";
@@ -250,7 +251,12 @@ const Login = () => {
                 </Box>
               </form>
             </Box>
-            <Box className="si-link">
+            <Box className="si-link forgetpass">
+              <p>
+                <Link to="/forgetpass">Forgot Password ?</Link>
+              </p>
+            </Box>
+            <Box className="si-link ">
               <p>
                 Don’t have an account ?
                 <span>

@@ -11,12 +11,14 @@ import Home from "./pages/Home/Home";
 import Notloggedinuser from "./pages/Privateroute/Notloggedin";
 import Loggedinuser from "./pages/Privateroute/Loggedinuser";
 import Registration from "./pages/Register/Registration";
+import Forgetpass from "./pages/Forgetpass/Forgetpass";
 
 function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route>
         <Route element={<Notloggedinuser />}>
+          <Route path="/forgetpass" element={<Forgetpass />}></Route>
           <Route path="/register" element={<Registration />}></Route>
           <Route path="/login" element={<Login />}></Route>
         </Route>
