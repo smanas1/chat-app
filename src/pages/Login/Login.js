@@ -95,12 +95,26 @@ const Login = () => {
         formik.values.password
       )
         .then(({ user }) => {
-          setDbtn("disabled");
-          resetForm({ values: "" });
-          dispatch(Loginuser(user));
-          localStorage.setItem("users", JSON.stringify(user));
-          setLoading(false);
-          navigat("/");
+          if (auth.currentUser.emailVerified == true) {
+            setDbtn("disabled");
+            resetForm({ values: "" });
+            dispatch(Loginuser(user));
+            localStorage.setItem("users", JSON.stringify(user));
+            setLoading(false);
+            navigat("/");
+          } else {
+            setLoading(false);
+            toast.warn("Please Verify Your Email", {
+              position: "top-right",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: false,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+            });
+          }
         })
 
         .catch((error) => {

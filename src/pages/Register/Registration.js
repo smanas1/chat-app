@@ -14,12 +14,15 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   sendEmailVerification,
+  updateProfile,
 } from "firebase/auth";
 import { ToastContainer, toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
+import { getDatabase, ref, set } from "firebase/database";
 
 const Registration = () => {
   const auth = getAuth();
+  const db = getDatabase();
   const [dbtn, setDbtn] = useState("contained");
   const [showpass, setShowpass] = useState("password");
   const [loading, setLoading] = useState(false);
@@ -49,24 +52,40 @@ const Registration = () => {
         formik.values.email,
         formik.values.password
       )
-        .then(() => {
+        .then(({ user }) => {
+          updateProfile(auth.currentUser, {
+            displayName: formik.values.name,
+          })
+            .then(() => {
+              console.log(user);
+              sendEmailVerification(auth.currentUser).then(() => {
+                console.log(user);
+                set(ref(db, "users/" + user.uid), {
+                  username: user.displayName,
+                  email: user.email,
+                }).then(() => {
+                  toast.success("Please Verify Your Email !", {
+                    position: "top-right",
+                    autoClose: 3000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: false,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "light",
+                  });
+                  setTimeout(() => {
+                    navigat("/login");
+                  }, 3500);
+                });
+              });
+            })
+            .catch((error) => {
+              console.log(error.message);
+            });
           setDbtn("disabled");
           resetForm({ values: "" });
           setLoading(false);
-          sendEmailVerification(auth.currentUser);
-          toast.success("Please Verify Your Email !", {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: false,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-          });
-          setTimeout(() => {
-            navigat("/login");
-          }, 3500);
         })
         .catch((error) => {
           if (error.code.includes("auth/email-already-in-use")) {
