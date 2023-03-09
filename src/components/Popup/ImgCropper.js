@@ -30,7 +30,7 @@ const ImgCropper = ({ img, setImg, cropData, setCropper, getCropData }) => {
             <Cropper
               className="crops"
               style={{ height: 300, width: "100%" }}
-              zoomTo={0.5}
+              zoomTo={0}
               initialAspectRatio={1}
               preview=".img-preview"
               src={img}

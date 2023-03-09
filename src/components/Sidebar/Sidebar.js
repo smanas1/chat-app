@@ -33,7 +33,7 @@ const Sidebar = () => {
   const dispatch = useDispatch();
   const auth = getAuth();
   const storage = getStorage();
-  const storageRef = ref(storage, "some-child");
+
   const handleLogOut = () => {
     signOut(auth)
       .then(() => {
@@ -47,6 +47,7 @@ const Sidebar = () => {
   const handleClose = () => setOpen(false);
   const chooseFile = useRef(null);
   const user = useSelector((users) => users.login.loggedin);
+  const storageRef = ref(storage, user.displayName + " : " + user.uid);
 
   const handleUpload = (e) => {
     e.preventDefault();
@@ -79,6 +80,7 @@ const Sidebar = () => {
                 "users",
                 JSON.stringify({ ...user, photoURL: downloadURL })
               );
+              console.log(user.photoURL);
             })
             .catch((err) => {
               err.message;
@@ -161,9 +163,28 @@ const Sidebar = () => {
       <div className="sidebar">
         <div className="all-wrapper">
           <div className="sidebar-wrapper">
-            <div className="logo" onClick={handleOpen}>
+            <div
+              className="logo"
+              style={{
+                backgroundImage: 'url("./img/avatar-login.webp")',
+                width: "90px",
+                height: "90px",
+                backgroundSize: "cover",
+              }}
+              onClick={handleOpen}
+            >
               <picture>
+                {/* <img
+                  className="sidebar-logo-img"
+                  src="./img/avatar-login.webp"
+                  alt=""
+                /> */}
                 <img src={user.photoURL} alt="" />
+                {/* {user.photoURL ? (
+                  <img src={user.photoURL} alt="" />
+                ) : (
+                  <img src="./img/avatar-login.webp" alt="" />
+                )} */}
               </picture>
               <div className="overlay">
                 <AiOutlineCloudUpload />
