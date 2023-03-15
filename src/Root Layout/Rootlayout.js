@@ -10,7 +10,7 @@ const Rootlayout = () => {
         <Grid item xs={1}>
           <Sidebar />
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={11}>
           <Outlet />
         </Grid>
       </Grid>

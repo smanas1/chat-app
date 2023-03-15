@@ -1,0 +1,20 @@
+.mygroup-img {
+  width: 100%;
+  object-fit: cover;
+  position: relative;
+}
+.my-group-scrool {
+  height: 310px;
+}
+.mygroup-item-img {
+  background-color: #fff;
+  position: relative;
+}
+.mygroup-item-img svg {
+  width: 30px;
+  height: 40px;
+  position: absolute;
+}
+.mygroup-item-img svg path {
+  color: var(--primary-color);
+}

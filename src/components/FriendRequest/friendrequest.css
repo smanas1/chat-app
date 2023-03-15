@@ -1,0 +1,30 @@
+.friend-req-color {
+  background-color: #fb5200;
+  margin-top: 5px;
+}
+.friend-req-scroll {
+  height: 450px;
+}
+.friend-req-mt {
+  margin-top: 20px;
+}
+
+.friend-req-btn button {
+  margin-top: 1px;
+}
+.friend-req-btn {
+  width: 20%;
+}
+
+.friend-req-btn-2 {
+  background-color: #f33e47 !important;
+  margin-top: 7px !important;
+  box-shadow: none;
+}
+.friend-req-btn-2 button:hover {
+  background-color: #f3000c !important;
+  box-shadow: none;
+}
+.friend-req-title {
+  margin-top: 10px;
+}
