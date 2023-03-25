@@ -30,7 +30,7 @@ const Friends = () => {
         <div className="home-header">
           <h4>Friends</h4>
         </div>
-        <div className="scroll friend-req-scroll">
+        <div className="scroll friend-scroll">
           {list}
           {list}
           {list}
