@@ -54,7 +54,7 @@ const Userlist = () => {
   }, []);
 
   // friend req delete
-  const handleCanclereq = (data) => {
+  const handleCanclereq = () => {
     remove(ref(db, "FriendReq/" + frndreq[1].id));
     // console.log(frndreq[1].id)
   };
@@ -66,7 +66,7 @@ const Userlist = () => {
           <h4>Users List</h4>
         </div>
         <div className="scroll userlist-scrool">
-          {userarrs.map((item, i, key) => {
+          {userarrs.map((item, i) => {
             return (
               <div key={i} className="home-items-wrapper">
                 <div className="home-items-img mygroup-item-img">
@@ -85,7 +85,7 @@ const Userlist = () => {
                     <Button
                       variant="contained"
                       size="small"
-                      onClick={() => handleCanclereq(item)}
+                      onClick={() => handleCanclereq()}
                     >
                       cancel
                     </Button>
