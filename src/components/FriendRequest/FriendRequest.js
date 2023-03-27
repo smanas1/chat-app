@@ -31,11 +31,16 @@ const FriendRequest = () => {
   }, []);
   // accept handle
   const handleAccept = (data) => {
-    set(push(ref(db, "Friend/")), {
+    set(push(ref(db, "Friends/")), {
       ...data,
     }).then(() => {
       remove(ref(db, "FriendReq/" + data.id));
     });
+  };
+
+  // reject request
+  const handleReject = (data) => {
+    remove(ref(db, "FriendReq/" + data.id));
   };
   return (
     <>
@@ -63,6 +68,7 @@ const FriendRequest = () => {
                   className="friend-req-btn-2 "
                   variant="contained"
                   size="small"
+                  onClick={() => handleReject(item)}
                 >
                   Reject
                 </Button>

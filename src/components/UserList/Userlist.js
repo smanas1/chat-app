@@ -18,6 +18,7 @@ const Userlist = () => {
   const user = useSelector((users) => users.login.loggedin);
   const [userarrs, setUserarrs] = useState([]);
   const [frndreq, setFriendreq] = useState([]);
+  const [frndlist, setFrndlist] = useState([]);
   const db = getDatabase();
   useEffect(() => {
     const starCountRef = ref(db, "users/");
@@ -40,7 +41,7 @@ const Userlist = () => {
       recivername: item.username,
     });
   };
-  //friend req cancel or add
+  //friend req
   useEffect(() => {
     const starCountRef = ref(db, "FriendReq/");
     onValue(starCountRef, (snapshot) => {
@@ -53,12 +54,18 @@ const Userlist = () => {
     });
   }, []);
 
-  // friend req delete
-  const handleCanclereq = () => {
-    remove(ref(db, "FriendReq/" + frndreq[1].id));
-    // console.log(frndreq[1].id)
-  };
-  console.log();
+  // red friend list
+  useEffect(() => {
+    const starCountRef = ref(db, "Friends/");
+    onValue(starCountRef, (snapshot) => {
+      let frndarr = [];
+      snapshot.forEach((item) => {
+        frndarr.push(item.val().reciverId + item.val().senderId);
+      });
+      setFrndlist(frndarr);
+    });
+  }, []);
+  console.log(frndlist);
   return (
     <>
       <div className="grouplist home-item userlist">
@@ -82,12 +89,13 @@ const Userlist = () => {
                 <div className="home-items-btn">
                   {frndreq.includes(user.uid + item.id) ||
                   frndreq.includes(item.id + user.uid) ? (
-                    <Button
-                      variant="contained"
-                      size="small"
-                      onClick={() => handleCanclereq()}
-                    >
-                      cancel
+                    <Button variant="contained" size="small">
+                      pending
+                    </Button>
+                  ) : frndlist.includes(user.uid + item.id) ||
+                    frndlist.includes(item.id + user.uid) ? (
+                    <Button variant="contained" size="small">
+                      Friend
                     </Button>
                   ) : (
                     <Button
