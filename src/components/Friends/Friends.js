@@ -30,6 +30,22 @@ const Friends = () => {
     remove(ref(db, "Friends/" + data.ids));
     console.log(frndlist);
   };
+
+  //handle Block
+
+  const handleBlock = (item) => {
+    if (user.uid == item.reciverId || user.uid == item.senderId) {
+      set(push(ref(db, "Block/")), {
+        block: item.recivername,
+        blockid: item.reciverId,
+        blockby: item.sendername,
+        blockbyid: item.senderId,
+      }).then(() => {
+        remove(ref(db, "Friends/" + item.ids));
+      });
+      console.log("hoiche");
+    }
+  };
   return (
     <>
       <div className="grouplist home-item friend-req-mt friend-item">
@@ -62,6 +78,7 @@ const Friends = () => {
                   className="friend-req-btn-2 friend-btn-2"
                   variant="contained"
                   size="small"
+                  onClick={() => handleBlock(item)}
                 >
                   Block
                 </Button>
