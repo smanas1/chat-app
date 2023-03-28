@@ -28,3 +28,10 @@
 .friend-req-title {
   margin-top: 10px;
 }
+.frnd-req-cancle-btn button {
+  background-color: #fff;
+}
+
+.frnd-req-cancle-btn button:hover {
+  background-color: #fff !important;
+}
