@@ -17,19 +17,7 @@ const FriendRequest = () => {
   const [frndcancle, setFrndcancle] = useState([]);
   const db = getDatabase();
   const user = useSelector((users) => users.login.loggedin);
-  //friend req show cancle
-  useEffect(() => {
-    const starCountRef = ref(db, "FriendReq/");
-    onValue(starCountRef, (snapshot) => {
-      let frndarr = [];
-      snapshot.forEach((item) => {
-        if (item.val().senderId == user.uid) {
-          frndarr.push({ ...item.val(), id: item.key });
-        }
-      });
-      setFrndcancle(frndarr);
-    });
-  }, []);
+
   //friend req show
   useEffect(() => {
     const starCountRef = ref(db, "FriendReq/");
@@ -57,10 +45,6 @@ const FriendRequest = () => {
     remove(ref(db, "FriendReq/" + data.id));
   };
 
-  //handle Cancle
-  const handleCancle = (data) => {
-    remove(ref(db, "FriendReq/" + data.id));
-  };
   return (
     <>
       <div className="grouplist home-item friend-req-mt">
@@ -94,37 +78,6 @@ const FriendRequest = () => {
               </div>
             </div>
           ))}
-          {frndcancle.map((item, i) => {
-            return (
-              <div key={i} className="home-items-wrapper">
-                <div className="home-items-img mygroup-item-img">
-                  <picture>
-                    <img
-                      className="mygroup-img"
-                      src={
-                        "https://images.pexels.com/photos/15913584/pexels-photo-15913584.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
-                      }
-                      alt=""
-                    />
-                  </picture>
-                </div>
-                <div className="home-items-title">
-                  <h4>{item.recivername}</h4>
-                  <p>this will next</p>
-                </div>
-                <div className="home-items-btn frnd-req-cancle-btn">
-                  <Button
-                    variant="outlined"
-                    size="small"
-                    color="error"
-                    onClick={() => handleCancle(item)}
-                  >
-                    cancle
-                  </Button>
-                </div>
-              </div>
-            );
-          })}
         </div>
       </div>
     </>

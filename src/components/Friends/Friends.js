@@ -34,7 +34,7 @@ const Friends = () => {
   //handle Block
 
   const handleBlock = (item) => {
-    if (user.uid == item.reciverId || user.uid == item.senderId) {
+    if (user.uid == item.senderId) {
       set(push(ref(db, "Block/")), {
         block: item.recivername,
         blockid: item.reciverId,
@@ -43,7 +43,15 @@ const Friends = () => {
       }).then(() => {
         remove(ref(db, "Friends/" + item.ids));
       });
-      console.log("hoiche");
+    } else {
+      set(push(ref(db, "Block/")), {
+        blockid: item.senderId,
+        block: item.sendername,
+        blockbyid: item.reciverId,
+        blockby: item.recivername,
+      }).then(() => {
+        remove(ref(db, "Friends/" + item.ids));
+      });
     }
   };
   return (

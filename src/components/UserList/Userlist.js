@@ -19,6 +19,7 @@ const Userlist = () => {
   const [userarrs, setUserarrs] = useState([]);
   const [frndreq, setFriendreq] = useState([]);
   const [frndlist, setFrndlist] = useState([]);
+  const [canclereq, setCanclereq] = useState([]);
   const db = getDatabase();
   useEffect(() => {
     const starCountRef = ref(db, "users/");
@@ -46,11 +47,13 @@ const Userlist = () => {
     const starCountRef = ref(db, "FriendReq/");
     onValue(starCountRef, (snapshot) => {
       let frndarr = [];
+      let canclearr = [];
       snapshot.forEach((item) => {
         frndarr.push(item.val().reciverId + item.val().senderId);
-        frndarr.push({ ...item, id: item.key });
+        canclearr.push({ ...item.val(), canclekey: item.key });
       });
       setFriendreq(frndarr);
+      setCanclereq(canclearr);
     });
   }, []);
 
@@ -65,7 +68,16 @@ const Userlist = () => {
       setFrndlist(frndarr);
     });
   }, []);
-  console.log(frndlist);
+
+  // friend req cancle
+  const handleCancle = (data) => {
+    canclereq.map((item) => {
+      if (data.id == item.reciverId) {
+        remove(ref(db, "FriendReq/" + item.canclekey));
+      }
+    });
+  };
+
   return (
     <>
       <div className="grouplist home-item userlist">
@@ -87,8 +99,15 @@ const Userlist = () => {
                   <p>this will next</p>
                 </div>
                 <div className="home-items-btn">
-                  {frndreq.includes(user.uid + item.id) ||
-                  frndreq.includes(item.id + user.uid) ? (
+                  {frndreq.includes(item.id + user.uid) ? (
+                    <Button
+                      variant="contained"
+                      size="small"
+                      onClick={() => handleCancle(item)}
+                    >
+                      Cancle
+                    </Button>
+                  ) : frndreq.includes(user.uid + item.id) ? (
                     <Button variant="contained" size="small">
                       pending
                     </Button>
