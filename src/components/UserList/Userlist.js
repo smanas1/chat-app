@@ -3,7 +3,7 @@ import "../Style/home-page.css";
 import "../UserList/userlist.css";
 import Button from "@mui/material/Button";
 import { MdGroups } from "react-icons/md";
-
+import { getStorage, ref as Ref, getDownloadURL } from "firebase/storage";
 import {
   getDatabase,
   ref,
@@ -16,10 +16,11 @@ import { useSelector } from "react-redux";
 
 const Userlist = () => {
   const user = useSelector((users) => users.login.loggedin);
-  const [userarrs, setUserarrs] = useState([]);
+  const [Userarrs, setUserarrs] = useState([]);
   const [frndreq, setFriendreq] = useState([]);
   const [frndlist, setFrndlist] = useState([]);
   const [canclereq, setCanclereq] = useState([]);
+  const storage = getStorage();
   const db = getDatabase();
   useEffect(() => {
     const starCountRef = ref(db, "users/");
@@ -27,10 +28,28 @@ const Userlist = () => {
       let userarr = [];
       snapshot.forEach((userlist) => {
         if (user.uid != userlist.key) {
-          userarr.push({ ...userlist.val(), id: userlist.key });
+          getDownloadURL(Ref(storage, userlist.key))
+            .then((url) => {
+              userarr.push({
+                ...userlist.val(),
+                id: userlist.key,
+                profilePicture: url,
+              });
+            })
+            .catch((err) => {
+              userarr.push({
+                ...userlist.val(),
+                id: userlist.key,
+                profilePicture: null,
+              });
+            })
+            .then(() => {
+              setUserarrs([...userarr]);
+            });
+
+          // userarr.push({ ...userlist.val(), id: userlist.key });
         }
       });
-      setUserarrs(userarr);
     });
   }, []);
 
@@ -40,6 +59,7 @@ const Userlist = () => {
       senderId: user.uid,
       reciverId: item.id,
       recivername: item.username,
+      profilePicture: item.profilePicture,
     });
   };
   //friend req
@@ -85,50 +105,52 @@ const Userlist = () => {
           <h4>Users List</h4>
         </div>
         <div className="scroll userlist-scrool">
-          {userarrs.map((item, i) => {
-            return (
-              <div key={i} className="home-items-wrapper">
-                <div className="home-items-img mygroup-item-img">
-                  <MdGroups />
-                  <picture>
-                    <img className="mygroup-img" src={item.img} alt="" />
-                  </picture>
-                </div>
-                <div className="home-items-title">
-                  <h4>{item.username}</h4>
-                  <p>this will next</p>
-                </div>
-                <div className="home-items-btn">
-                  {frndreq.includes(item.id + user.uid) ? (
-                    <Button
-                      variant="contained"
-                      size="small"
-                      onClick={() => handleCancle(item)}
-                    >
-                      Cancle
-                    </Button>
-                  ) : frndreq.includes(user.uid + item.id) ? (
-                    <Button variant="contained" size="small">
-                      pending
-                    </Button>
-                  ) : frndlist.includes(user.uid + item.id) ||
-                    frndlist.includes(item.id + user.uid) ? (
-                    <Button variant="contained" size="small">
-                      Friend
-                    </Button>
-                  ) : (
-                    <Button
-                      variant="contained"
-                      size="small"
-                      onClick={() => handlesendreq(item)}
-                    >
-                      Add
-                    </Button>
-                  )}
-                </div>
+          {Userarrs.map((item, i) => (
+            <div key={i} className="home-items-wrapper">
+              <div className="home-items-img mygroup-item-img">
+                <MdGroups />
+                <picture>
+                  <img
+                    className="mygroup-img"
+                    src={item.profilePicture || "./img/avatar-login.webp"}
+                    alt=""
+                  />
+                </picture>
               </div>
-            );
-          })}
+              <div className="home-items-title">
+                <h4>{item.username}</h4>
+                <p>this will next</p>
+              </div>
+              <div className="home-items-btn">
+                {frndreq.includes(item.id + user.uid) ? (
+                  <Button
+                    variant="contained"
+                    size="small"
+                    onClick={() => handleCancle(item)}
+                  >
+                    Cancle
+                  </Button>
+                ) : frndreq.includes(user.uid + item.id) ? (
+                  <Button variant="contained" size="small">
+                    pending
+                  </Button>
+                ) : frndlist.includes(user.uid + item.id) ||
+                  frndlist.includes(item.id + user.uid) ? (
+                  <Button variant="contained" size="small">
+                    Friend
+                  </Button>
+                ) : (
+                  <Button
+                    variant="contained"
+                    size="small"
+                    onClick={() => handlesendreq(item)}
+                  >
+                    Add
+                  </Button>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </>

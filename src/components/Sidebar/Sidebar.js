@@ -47,7 +47,7 @@ const Sidebar = () => {
   const handleClose = () => setOpen(false);
   const chooseFile = useRef(null);
   const user = useSelector((users) => users.login.loggedin);
-  const storageRef = ref(storage, user.displayName + " : " + user.uid);
+  const storageRef = ref(storage, user.uid);
 
   const handleUpload = (e) => {
     e.preventDefault();

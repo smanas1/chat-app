@@ -37,9 +37,11 @@ const Grouplist = () => {
       groupid: data.ids,
       grouptag: data.grouptagline,
       userid: user.uid,
+      photo: user.photoURL,
       username: user.displayName,
     });
   };
+
   return (
     <>
       <div className="grouplist home-item">

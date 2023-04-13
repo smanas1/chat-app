@@ -63,7 +63,15 @@ const Friends = () => {
         <div className="scroll friend-scroll">
           {frndlist.map((item, i) => (
             <div className="home-items-wrapper" key={i}>
-              <div className="home-items-img friend-img friend-req-color"></div>
+              <div>
+                <picture>
+                  <img
+                    className="home-items-img friend-req-color"
+                    src={item.profilePicture || "./img/avatar-login.webp"}
+                    alt=""
+                  />
+                </picture>
+              </div>
               <div className="home-items-title friend-req-title friend-title">
                 <h4>
                   {user.uid == item.senderId

@@ -67,7 +67,11 @@ const Blockuser = () => {
                 <div className="home-items-img mygroup-item-img">
                   <MdGroups />
                   <picture>
-                    <img className="mygroup-img" src={item.img} alt="" />
+                    <img
+                      className="mygroup-img"
+                      src={item.profilePicture || "./img/avatar-login.webp"}
+                      alt=""
+                    />
                   </picture>
                 </div>
                 <div className="home-items-title">

@@ -21,6 +21,17 @@
 .home-items-wrapper:last-child {
   border: none;
 }
+.home-items-img img {
+  height: 60px;
+  width: 60px;
+
+  border-radius: 50%;
+  margin: 0px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
 .home-items-img {
   height: 60px;
   width: 60px;
@@ -32,6 +43,7 @@
   align-items: center;
   overflow: hidden;
 }
+
 .home-items-btn button {
   background-color: var(--primary-color);
   box-shadow: none;

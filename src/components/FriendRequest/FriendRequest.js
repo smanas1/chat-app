@@ -54,7 +54,15 @@ const FriendRequest = () => {
         <div className="scroll friend-req-scroll">
           {frndreq.map((item, i) => (
             <div className="home-items-wrapper" key={i}>
-              <div className="home-items-img friend-req-color"> </div>
+              <div>
+                <picture>
+                  <img
+                    className="home-items-img friend-req-color"
+                    src={item.profilePicture || "./img/avatar-login.webp"}
+                    alt=""
+                  />
+                </picture>
+              </div>
               <div className="home-items-title friend-req-title">
                 <h4>{item.sendername}</h4>
                 <p>this will next</p>

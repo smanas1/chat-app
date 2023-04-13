@@ -159,7 +159,11 @@ const Mygroup = () => {
                 <div className="home-items-img mygroup-item-img group-req-img">
                   <MdGroups />
                   <picture>
-                    <img className="mygroup-img" alt="" />
+                    <img
+                      className="mygroup-img"
+                      alt=""
+                      src={item.photo || "./img/avatar-login.webp"}
+                    />
                   </picture>
                 </div>
                 <div className="home-items-title group-req-name">
