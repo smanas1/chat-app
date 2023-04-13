@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../Style/home-page.css";
 import "./mygroup.css";
 import Button from "@mui/material/Button";
@@ -7,6 +7,7 @@ import { MygroupData } from "./Data";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
+import Badge from "@mui/material/Badge";
 import {
   getDatabase,
   ref,
@@ -15,6 +16,8 @@ import {
   push,
   remove,
 } from "firebase/database";
+import Divider from "@mui/material/Divider";
+import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import { useSelector } from "react-redux";
 const Mygroup = () => {
@@ -23,6 +26,17 @@ const Mygroup = () => {
   const handleClose = () => setOpen(false);
   const [groupname, setGroupname] = useState("");
   const [grouptagline, setGrouptagline] = useState("");
+  const [mygroups, setMygroups] = useState([]);
+  const [groupreq, setGroupreq] = useState([]);
+  const [reqcount, setReqcount] = useState([]);
+
+  const [infoopen, setInfoOpen] = React.useState(false);
+  const handleInfoOpen = () => setInfoOpen(true);
+  const handleInfoClose = () => setInfoOpen(false);
+
+  const [reqopen, setReqOpen] = React.useState(false);
+  const handlereqOpen = () => setReqOpen(true);
+  const handlereqClose = () => setReqOpen(false);
 
   const style = {
     position: "absolute",
@@ -36,6 +50,17 @@ const Mygroup = () => {
     p: 4,
   };
 
+  const styles = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 600,
+    bgcolor: "background.paper",
+
+    boxShadow: 24,
+    p: 3,
+  };
   const db = getDatabase();
   const user = useSelector((users) => users.login.loggedin);
 
@@ -48,6 +73,36 @@ const Mygroup = () => {
     });
     setOpen(false);
   };
+
+  useEffect(() => {
+    const starCountRef = ref(db, "Groups/");
+    onValue(starCountRef, (snapshot) => {
+      let mygroupsarr = [];
+      snapshot.forEach((item) => {
+        if (item.val().adminid == user.uid) {
+          mygroupsarr.push({ ...item, id: item.key });
+        }
+      });
+      setMygroups(mygroupsarr);
+    });
+  }, []);
+
+  const handlereq = (ritem) => {
+    setReqOpen(true);
+    const starCountRef = ref(db, "GroupJoinReq/");
+    onValue(starCountRef, (snapshot) => {
+      let mygroupsreqarr = [];
+
+      snapshot.forEach((item) => {
+        if (item.val().adminid == user.uid && item.val().groupid == ritem.id) {
+          mygroupsreqarr.push({ ...item.val(), ids: item.key });
+        }
+      });
+
+      setGroupreq(mygroupsreqarr);
+    });
+  };
+
   return (
     <>
       <div className="grouplist home-item">
@@ -60,22 +115,30 @@ const Mygroup = () => {
           </div>
         </div>
         <div className="scroll my-group-scrool">
-          {MygroupData.map((item, i) => {
+          {mygroups.map((item, i) => {
             return (
-              <div key={i} className="home-items-wrapper">
-                <div className="home-items-img mygroup-item-img">
-                  <MdGroups />
-                  <picture>
-                    <img className="mygroup-img" src={item.img} alt="" />
-                  </picture>
+              <div className="home-items-wrapper" key={i}>
+                <div className="home-items-img friend-img friend-req-color"></div>
+                <div className="home-items-title friend-req-title friend-title">
+                  <h4>{item.groupname}</h4>
+                  <p>{item.grouptagline}</p>
                 </div>
-                <div className="home-items-title">
-                  <h4>{item.name}</h4>
-                  <p>this will next</p>
-                </div>
-                <div className="home-items-btn">
-                  <Button variant="contained" size="small">
-                    Leave
+                <div className="home-items-btn friend-req-btn friend-btn">
+                  <Button
+                    variant="contained"
+                    size="small"
+                    onClick={() => handlereq(item)}
+                  >
+                    request
+                  </Button>
+
+                  <Button
+                    className="friend-req-btn-2 friend-btn-2 group-info"
+                    variant="contained"
+                    size="small"
+                    onClick={() => handleInfoOpen()}
+                  >
+                    Info
                   </Button>
                 </div>
               </div>
@@ -83,6 +146,50 @@ const Mygroup = () => {
           })}
         </div>
       </div>
+      <Modal
+        open={reqopen}
+        onClose={handlereqClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <div className="group-req-scroll">
+            {groupreq.map((item, i) => (
+              <div className="home-items-wrapper" key={i}>
+                <div className="home-items-img mygroup-item-img group-req-img">
+                  <MdGroups />
+                  <picture>
+                    <img className="mygroup-img" alt="" />
+                  </picture>
+                </div>
+                <div className="home-items-title group-req-name">
+                  <h4>{item.username}</h4>
+                </div>
+                <div className="home-items-btn">
+                  <Button variant="contained" size="small">
+                    accept
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Box>
+      </Modal>
+      <Modal
+        open={infoopen}
+        onClose={handleInfoClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Text in a modal
+          </Typography>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+          </Typography>
+        </Box>
+      </Modal>
       <Modal
         open={open}
         onClose={handleClose}

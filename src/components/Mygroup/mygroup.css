@@ -47,3 +47,24 @@
 .group-modal {
   border-radius: 10px;
 }
+.mygroup-info-heading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 25px;
+}
+.group-info {
+  background-color: rgb(16, 160, 16) !important;
+  width: 85px;
+}
+.group-req-img {
+  margin-left: 0px;
+}
+.group-req-name {
+  display: flex;
+  align-items: center;
+}
+.group-req-scroll {
+  height: 300px;
+  overflow: auto;
+}

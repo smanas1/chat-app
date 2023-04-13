@@ -59,7 +59,6 @@ const Login = () => {
   const handleGoogle = () => {
     signInWithPopup(auth, googleProvider)
       .then((g) => {
-        console.log(g.user);
         dispatch(Loginuser(g.user));
         localStorage.setItem("users", JSON.stringify(g.user));
         navigat("/");

@@ -40,7 +40,6 @@ const Blockuser = () => {
         }
       });
       setBlocklist(blockArr);
-      console.log(blockArr);
     });
   }, []);
 

@@ -80,7 +80,6 @@ const Sidebar = () => {
                 "users",
                 JSON.stringify({ ...user, photoURL: downloadURL })
               );
-              console.log(user.photoURL);
             })
             .catch((err) => {
               err.message;
