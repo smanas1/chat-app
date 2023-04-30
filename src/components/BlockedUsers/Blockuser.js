@@ -3,7 +3,6 @@ import "../Style/home-page.css";
 import "./blockuser.css";
 import Button from "@mui/material/Button";
 import { MdGroups } from "react-icons/md";
-import { MygroupData } from "../Mygroup/Data";
 import { AiOutlineInfoCircle } from "react-icons/ai";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";

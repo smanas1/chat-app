@@ -20,8 +20,11 @@ import {
 } from "firebase/auth";
 import { ToastContainer, toast } from "react-toastify";
 import { json, Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Loginuser } from "../../Redux/Slice/LoginSlice";
+import { getDatabase, onValue, ref } from "firebase/database";
+import "../../components/Search/search.css";
+import "../../components/Style/home-page.css";
 
 const Login = () => {
   const auth = getAuth();
@@ -32,6 +35,10 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigat = useNavigate();
   const fbprovider = new FacebookAuthProvider();
+  const db = getDatabase();
+  const [userid, setUserid] = useState([]);
+
+  const user = useSelector((users) => users.login.loggedin);
 
   let handleShowPass = () => {
     if (showpass === "password") {
@@ -54,14 +61,27 @@ const Login = () => {
         console.log(error.code);
       });
   };
+  ////
 
+  useEffect(() => {
+    const starCountRef = ref(db, "users/");
+    onValue(starCountRef, (snapshot) => {
+      let useridArr = [];
+      snapshot.forEach((item) => {
+        useridArr.push({ ...item.val(), id: item.key });
+      });
+
+      setUserid(useridArr);
+    });
+  }, []);
   // google signUP
   const handleGoogle = () => {
     signInWithPopup(auth, googleProvider)
       .then((g) => {
-        dispatch(Loginuser(g.user));
-        localStorage.setItem("users", JSON.stringify(g.user));
-        navigat("/");
+        // dispatch(Loginuser(g.user));
+        // localStorage.setItem("users", JSON.stringify(g.user));
+        // navigat("/");
+        console.log(g.val());
       })
       .catch((error) => {
         console.log(error.code);

@@ -68,3 +68,11 @@
   height: 300px;
   overflow: auto;
 }
+.my-group-popup-img {
+  margin: 0;
+  padding: 0;
+}
+
+.my-group-popup-title {
+  width: 50%;
+}

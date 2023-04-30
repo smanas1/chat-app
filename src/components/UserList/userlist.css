@@ -2,5 +2,12 @@
   margin-top: 0px;
 }
 .userlist-scrool {
-  height: 46vh;
+  height: 42vh;
+}
+.user-alart {
+  width: 90%;
+}
+.user-alart-wrapper {
+  display: flex;
+  justify-content: center;
 }
