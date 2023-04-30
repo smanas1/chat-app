@@ -3,7 +3,6 @@ import "../Style/home-page.css";
 import "./mygroup.css";
 import Button from "@mui/material/Button";
 import { MdGroups } from "react-icons/md";
-import { MygroupData } from "./Data";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
@@ -80,7 +79,7 @@ const Mygroup = () => {
       let mygroupsarr = [];
       snapshot.forEach((item) => {
         if (item.val().adminid == user.uid) {
-          mygroupsarr.push({ ...item, id: item.key });
+          mygroupsarr.push({ ...item.val(), id: item.key });
         }
       });
       setMygroups(mygroupsarr);
@@ -156,22 +155,28 @@ const Mygroup = () => {
           <div className="group-req-scroll">
             {groupreq.map((item, i) => (
               <div className="home-items-wrapper" key={i}>
-                <div className="home-items-img mygroup-item-img group-req-img">
-                  <MdGroups />
+                <div>
                   <picture>
                     <img
-                      className="mygroup-img"
-                      alt=""
+                      className="home-items-img friend-req-color my-group-popup-img"
                       src={item.photo || "./img/avatar-login.webp"}
+                      alt=""
                     />
                   </picture>
                 </div>
-                <div className="home-items-title group-req-name">
+                <div className="home-items-title friend-req-title friend-title my-group-popup-title">
                   <h4>{item.username}</h4>
                 </div>
-                <div className="home-items-btn">
+                <div className="home-items-btn friend-req-btn friend-btn">
                   <Button variant="contained" size="small">
                     accept
+                  </Button>
+                  <Button
+                    className="friend-req-btn-2 "
+                    variant="contained"
+                    size="small"
+                  >
+                    reject
                   </Button>
                 </div>
               </div>
