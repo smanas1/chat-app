@@ -57,9 +57,7 @@ const Registration = () => {
             displayName: formik.values.name,
           })
             .then(() => {
-              console.log(user);
               sendEmailVerification(auth.currentUser).then(() => {
-                console.log(user);
                 set(ref(db, "users/" + user.uid), {
                   username: user.displayName,
                   email: user.email,

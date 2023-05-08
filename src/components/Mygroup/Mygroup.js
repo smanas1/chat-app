@@ -101,7 +101,17 @@ const Mygroup = () => {
       setGroupreq(mygroupsreqarr);
     });
   };
+  const handlereqaccept = (item) => {
+    set(push(ref(db, "GroupsMembers/")), {
+      ...item,
+    }).then(() => {
+      remove(ref(db, "GroupJoinReq/" + item.ids));
+    });
+  };
 
+  const handlereqreject = (item) => {
+    remove(ref(db, "GroupJoinReq/" + item.ids));
+  };
   return (
     <>
       <div className="grouplist home-item">
@@ -168,10 +178,15 @@ const Mygroup = () => {
                   <h4>{item.username}</h4>
                 </div>
                 <div className="home-items-btn friend-req-btn friend-btn">
-                  <Button variant="contained" size="small">
+                  <Button
+                    variant="contained"
+                    size="small"
+                    onClick={() => handlereqaccept(item)}
+                  >
                     accept
                   </Button>
                   <Button
+                    onClick={() => handlereqreject(item)}
                     className="friend-req-btn-2 "
                     variant="contained"
                     size="small"

@@ -22,7 +22,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { json, Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Loginuser } from "../../Redux/Slice/LoginSlice";
-import { getDatabase, onValue, ref } from "firebase/database";
+import { getDatabase, onValue, ref, set } from "firebase/database";
 import "../../components/Search/search.css";
 import "../../components/Style/home-page.css";
 
@@ -75,16 +75,34 @@ const Login = () => {
     });
   }, []);
   // google signUP
+  const checkUser = () => {
+    userid.map((item) => {});
+  };
   const handleGoogle = () => {
     signInWithPopup(auth, googleProvider)
       .then((g) => {
-        // dispatch(Loginuser(g.user));
-        // localStorage.setItem("users", JSON.stringify(g.user));
-        // navigat("/");
-        console.log(g.val());
+        dispatch(Loginuser(g.user));
+        localStorage.setItem("users", JSON.stringify(g.user));
+        navigat("/");
+        // set(ref(db, "users/" + g.user.uid), {
+        //   username: g.user.displayName,
+        //   email: g.user.email,
+        // });
+        userid.map((item) => {
+          console.log(item.id);
+          if (item.id != g.user.uid) {
+            set(ref(db, "users/" + g.user.uid), {
+              username: g.user.displayName,
+              email: g.user.email,
+            });
+          } else {
+          }
+        });
+        // console.log(g.user);
       })
+
       .catch((error) => {
-        console.log(error.code);
+        console.log(error.message);
         toast.error("Login Failed Please Try Again", {
           position: "top-right",
           autoClose: 3000,

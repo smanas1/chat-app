@@ -13,6 +13,7 @@ import Loggedinuser from "./pages/Privateroute/Loggedinuser";
 import Registration from "./pages/Register/Registration";
 import Forgetpass from "./pages/Forgetpass/Forgetpass";
 import Rootlayout from "./Root Layout/Rootlayout";
+import Message from "./pages/Message/Message";
 
 function App() {
   const router = createBrowserRouter(
@@ -26,6 +27,7 @@ function App() {
         <Route element={<Loggedinuser />}>
           <Route element={<Rootlayout />}>
             <Route path="/" element={<Home />}></Route>
+            <Route path="/message" element={<Message />}></Route>
           </Route>
         </Route>
       </Route>

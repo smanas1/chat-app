@@ -13,6 +13,10 @@ import {
 import { useSelector } from "react-redux";
 const Grouplist = () => {
   const [grouplist, setGrouplist] = useState([]);
+  const [groupreq, setGroupreq] = useState([]);
+  const [groupreqid, setGroupreqid] = useState([]);
+  const [groupmember, setGroupmember] = useState([]);
+  const [groupmemberid, setGroupmemberid] = useState([]);
   const db = getDatabase();
   const user = useSelector((users) => users.login.loggedin);
 
@@ -29,6 +33,42 @@ const Grouplist = () => {
     });
   }, []);
 
+  useEffect(() => {
+    const starCountRef = ref(db, "GroupJoinReq/");
+    onValue(starCountRef, (snapshot) => {
+      let groupreq = [];
+      let groupreqid = [];
+      snapshot.forEach((item) => {
+        groupreq.push(item.val().groupid + item.val().userid);
+        groupreqid.push({ ...item.val(), id: item.key });
+      });
+      setGroupreq(groupreq);
+      setGroupreqid(groupreqid);
+    });
+  }, []);
+  useEffect(() => {
+    const starCountRef = ref(db, "GroupsMembers/");
+    onValue(starCountRef, (snapshot) => {
+      let GroupsMembersArr = [];
+      let GroupsMembersid = [];
+      snapshot.forEach((item) => {
+        GroupsMembersArr.push(item.val().groupid + item.val().userid);
+        GroupsMembersid.push({ ...item.val(), id: item.key });
+      });
+      setGroupmember(GroupsMembersArr);
+      setGroupmemberid(GroupsMembersid);
+    });
+  }, []);
+  const handleleave = (data) => {
+    console.log(data);
+    groupmemberid.map((item) => {
+      if (data.ids == item.groupid) {
+        remove(ref(db, "GroupsMembers/" + item.id));
+      }
+      console.log(item);
+    });
+  };
+  console.log(groupmemberid);
   const handlejoin = (data) => {
     set(push(ref(db, "GroupJoinReq/")), {
       adminname: data.adminName,
@@ -39,6 +79,14 @@ const Grouplist = () => {
       userid: user.uid,
       photo: user.photoURL,
       username: user.displayName,
+    });
+  };
+
+  const handleReqCancle = (data) => {
+    groupreqid.map((item) => {
+      if (data.ids == item.groupid) {
+        remove(ref(db, "GroupJoinReq/" + item.id));
+      }
     });
   };
 
@@ -57,13 +105,32 @@ const Grouplist = () => {
                 <p>{item.grouptagline}</p>
               </div>
               <div className="home-items-btn">
-                <Button
-                  variant="contained"
-                  size="small"
-                  onClick={() => handlejoin(item)}
-                >
-                  Join
-                </Button>
+                {groupreq.includes(item.ids + user.uid) ? (
+                  <Button
+                    variant="contained"
+                    size="small"
+                    onClick={() => handleReqCancle(item)}
+                  >
+                    cancle
+                  </Button>
+                ) : groupmember.includes(item.ids + user.uid) ||
+                  groupmember.includes(user.uid + item.ids) ? (
+                  <Button
+                    variant="contained"
+                    size="small"
+                    onClick={() => handleleave(item)}
+                  >
+                    Leave
+                  </Button>
+                ) : (
+                  <Button
+                    variant="contained"
+                    size="small"
+                    onClick={() => handlejoin(item)}
+                  >
+                    join
+                  </Button>
+                )}
               </div>
             </div>
           ))}
