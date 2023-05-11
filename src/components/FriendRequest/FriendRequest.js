@@ -58,7 +58,7 @@ const FriendRequest = () => {
                 <picture>
                   <img
                     className="home-items-img friend-req-color"
-                    src={item.profilePicture || "./img/avatar-login.webp"}
+                    src={item.senderPhoto || "./img/avatar-login.webp"}
                     alt=""
                   />
                 </picture>

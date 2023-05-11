@@ -32,10 +32,14 @@
   align-items: center;
   overflow: hidden;
 }
+.home-items-img svg {
+  font-size: 30px;
+  z-index: 0;
+}
 .home-items-img {
   height: 60px;
   width: 60px;
-  background-color: rebeccapurple;
+
   border-radius: 50%;
   margin: 0px 20px;
   display: flex;

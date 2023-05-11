@@ -58,6 +58,7 @@ const Userlist = () => {
     set(push(ref(db, "FriendReq/")), {
       sendername: user.displayName,
       senderId: user.uid,
+      senderPhoto: user.photoURL,
       reciverId: item.id,
       recivername: item.username,
       profilePicture: item.profilePicture,

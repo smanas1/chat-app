@@ -65,11 +65,19 @@ const Friends = () => {
             <div className="home-items-wrapper" key={i}>
               <div>
                 <picture>
-                  <img
-                    className="home-items-img friend-req-color"
-                    src={item.profilePicture || "./img/avatar-login.webp"}
-                    alt=""
-                  />
+                  {item.senderId == user.uid ? (
+                    <img
+                      className="home-items-img friend-req-color"
+                      src={item.profilePicture || "./img/avatar-login.webp"}
+                      alt=""
+                    />
+                  ) : (
+                    <img
+                      className="home-items-img friend-req-color"
+                      src={item.senderPhoto || "./img/avatar-login.webp"}
+                      alt=""
+                    />
+                  )}
                 </picture>
               </div>
               <div className="home-items-title friend-req-title friend-title">

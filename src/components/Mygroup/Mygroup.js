@@ -127,7 +127,9 @@ const Mygroup = () => {
           {mygroups.map((item, i) => {
             return (
               <div className="home-items-wrapper" key={i}>
-                <div className="home-items-img friend-img friend-req-color"></div>
+                <div className="home-items-img friend-img friend-req-color">
+                  <MdGroups />
+                </div>
                 <div className="home-items-title friend-req-title friend-title">
                   <h4>{item.groupname}</h4>
                   <p>{item.grouptagline}</p>

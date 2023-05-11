@@ -11,6 +11,7 @@ import {
   remove,
 } from "firebase/database";
 import { useSelector } from "react-redux";
+import { MdGroups } from "react-icons/md";
 const Grouplist = () => {
   const [grouplist, setGrouplist] = useState([]);
   const [groupreq, setGroupreq] = useState([]);
@@ -60,15 +61,13 @@ const Grouplist = () => {
     });
   }, []);
   const handleleave = (data) => {
-    console.log(data);
     groupmemberid.map((item) => {
       if (data.ids == item.groupid) {
         remove(ref(db, "GroupsMembers/" + item.id));
       }
-      console.log(item);
     });
   };
-  console.log(groupmemberid);
+
   const handlejoin = (data) => {
     set(push(ref(db, "GroupJoinReq/")), {
       adminname: data.adminName,
@@ -99,7 +98,9 @@ const Grouplist = () => {
         <div className="scroll">
           {grouplist.map((item, i) => (
             <div className="home-items-wrapper" key={i}>
-              <div className="home-items-img"> </div>
+              <div className="home-items-img">
+                <MdGroups />
+              </div>
               <div className="home-items-title">
                 <h4>{item.groupname}</h4>
                 <p>{item.grouptagline}</p>
