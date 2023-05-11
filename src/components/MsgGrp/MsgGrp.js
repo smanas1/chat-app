@@ -47,7 +47,6 @@ const MsgGrp = () => {
             grouplistarr.push({ ...item.val(), ids: item.key });
           }
         });
-        console.log(item.val().adminid);
       });
       setGrouplist(grouplistarr);
     });
@@ -62,7 +61,7 @@ const MsgGrp = () => {
       return item;
     }
   });
-  console.log(member);
+
   return (
     <div className="grouplist home-item userlist msg-grouplist">
       <div className="home-header">

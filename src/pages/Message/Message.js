@@ -6,6 +6,7 @@ import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import MsgGrp from "../../components/MsgGrp/MsgGrp";
 import MsgFrnd from "../../components/MsgFrnd/MsgFrnd";
+import Messages from "../../components/Messages/Messages";
 
 const Message = () => {
   return (
@@ -15,7 +16,9 @@ const Message = () => {
           <MsgGrp />
           <MsgFrnd />
         </Grid>
-        <Grid item xs={7} className="msg-grp-wrapper"></Grid>
+        <Grid item xs={7} className="messages">
+          <Messages />
+        </Grid>
       </Grid>
     </Box>
   );

@@ -1,0 +1,108 @@
+.messages-wrapper {
+  background-color: var(--white);
+  height: 95vh;
+  width: 100%;
+  border-radius: 10px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.075);
+  display: flex;
+  flex-direction: column;
+}
+.message-top {
+  height: 100px;
+  padding: 20px 20px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+}
+.message-bottom {
+  height: 60px;
+}
+.messages {
+  flex-grow: 1;
+  overflow-y: auto;
+  background-color: #f5f5f5;
+}
+.messages::-webkit-scrollbar {
+  width: 5px;
+  border-radius: 40px;
+  background-color: #dfdfdf;
+}
+.messages::-webkit-scrollbar-thumb {
+  border-radius: 40px;
+  background-color: #5f35f5;
+}
+.top-img img {
+  width: 60px;
+  position: relative;
+  border-radius: 50%;
+  border: 2px solid var(--primary-color);
+}
+.top-img {
+  position: relative;
+  display: flex;
+  margin-right: 15px;
+}
+.message-inputs {
+  width: 100%;
+}
+.top-img::after {
+  content: "";
+  position: absolute;
+  height: 12px;
+  width: 12px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background-color: rgb(3, 255, 3);
+  bottom: 10px;
+  right: 0px;
+}
+.top-info {
+  display: flex;
+  align-items: center;
+}
+.top-content p {
+  font-size: 13px;
+}
+.top-content h2 {
+  line-height: 1;
+}
+.top-btns {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.top-btns svg {
+  font-size: 20px;
+}
+.message-bottom {
+  padding: 10px 20px;
+}
+.message-center {
+  display: flex;
+  justify-content: space-between;
+}
+.speeddile button {
+  width: 35px;
+  height: 33px;
+}
+.speeddile button {
+  background-color: var(--primary-color);
+}
+.speeddial-action svg {
+  color: var(--white);
+  font-size: 23px;
+}
+.speeddile button:hover {
+  background-color: var(--primary-color);
+}
+.send-btn button {
+  padding: 14px;
+  margin: 0px 10px;
+  margin-top: 1px;
+  background-color: var(--primary-color);
+}
+.send-btn button:hover {
+  background-color: var(--primary-color);
+}
