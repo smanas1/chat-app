@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./messages.css";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { AiOutlineCamera } from "react-icons/ai";
@@ -11,13 +11,76 @@ import SpeedDial from "@mui/material/SpeedDial";
 import SpeedDialIcon from "@mui/material/SpeedDialIcon";
 import SpeedDialAction from "@mui/material/SpeedDialAction";
 import Button from "@mui/material/Button";
+import ModalImage from "react-modal-image";
+import { useSelector } from "react-redux";
+import {
+  getDatabase,
+  ref,
+  onValue,
+  set,
+  push,
+  remove,
+} from "firebase/database";
+import moment from "moment/moment";
 
 const Messages = () => {
+  const [msg, setMsg] = useState("");
+  const [msglist, setMsglist] = useState([]);
+
+  const db = getDatabase();
+  const activeChatName = useSelector((active) => active.ActiveChat.active);
+  const user = useSelector((users) => users.login.loggedin);
+
   const actions = [
     { icon: <AiOutlineCamera />, name: "Camera" },
     { icon: <BiMicrophone />, name: "Voice" },
     { icon: <AiOutlineLink />, name: "File" },
   ];
+
+  const handleMsg = () => {
+    if (activeChatName.status == "single") {
+      if (msg != "") {
+        set(push(ref(db, "singlemsg/")), {
+          whosendname: user.displayName,
+          whosendid: user.uid,
+          message: msg,
+          whoreciveid: activeChatName.id,
+          whorecivename: activeChatName.name,
+          date: `${new Date().getDate()}-${
+            new Date().getMonth() + 1
+          }-${new Date().getFullYear()} : ${new Date().getSeconds()}:${new Date().getMinutes()}:${new Date().getHours()}`,
+        });
+        setMsg("");
+      }
+    } else {
+      console.log("grpmsg");
+    }
+  };
+  const handleKey = (e) => {
+    if (e.key == "Enter") {
+      handleMsg();
+    }
+  };
+
+  //get all message
+  useEffect(() => {
+    const starCountRef = ref(db, "singlemsg/");
+    onValue(starCountRef, (snapshot) => {
+      let singlemsgarr = [];
+      snapshot.forEach((item) => {
+        if (
+          (item.val().whosendid == user.uid &&
+            item.val().whoreciveid == activeChatName.id) ||
+          (item.val().whoreciveid == user.uid &&
+            activeChatName.id == item.val().whosendid)
+        ) {
+          singlemsgarr.push(item.val());
+        }
+      });
+      setMsglist(singlemsgarr);
+    });
+  }, [activeChatName?.id]);
+
   return (
     <div className="messages-wrapper">
       {/* Message Top */}
@@ -25,11 +88,14 @@ const Messages = () => {
         <div className="top-info">
           <div className="top-img">
             <picture>
-              <img src="../img/avatar-login.webp" alt="" />
+              <img
+                src={activeChatName?.photo || "../img/avatar-login.webp"}
+                alt=""
+              />
             </picture>
           </div>
           <div className="top-content">
-            <h2>User</h2>
+            <h2>{activeChatName?.name}</h2>
             <p>Online</p>
           </div>
         </div>
@@ -40,122 +106,116 @@ const Messages = () => {
       <Divider />
       {/* Messages */}
       <div className="messages">
-        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptatum
-        natus ducimus quo, id distinctio blanditiis earum minus corporis nam
-        laudantium quidem veritatis saepe, corrupti assumenda laboriosam, sint
-        velit doloremque voluptate autem fugit repudiandae aliquam. Blanditiis
-        aliquam aut inventore magnam repudiandae fuga saepe illo porro ipsum,
-        architecto dignissimos est nostrum corporis delectus modi velit atque
-        provident! Voluptates inventore voluptatibus ullam nihil eveniet,
-        laborum dicta reiciendis quae, ea et deleniti officia quibusdam earum
-        quam sunt? Illo minima ullam iure saepe voluptate eos hic temporibus
-        architecto aliquid voluptatem? Sint totam itaque, harum saepe alias est
-        illum. Voluptatem aliquid ut quam delectus similique quasi, repellendus
-        autem, aliquam excepturi expedita sunt dolore distinctio, blanditiis
-        tenetur reprehenderit dolores in ea consequatur veritatis iusto
-        consectetur ipsum laboriosam reiciendis! Commodi aliquid facilis odit
-        ratione neque magnam repudiandae, sint placeat eveniet reprehenderit
-        voluptatum quaerat voluptatibus ea voluptatem eaque excepturi amet
-        mollitia, ipsam tempore aut libero repellendus nisi laudantium deserunt!
-        Molestias blanditiis natus qui repellat, veritatis illum dicta non
-        molestiae nihil ad ex culpa, animi, iure quae. Recusandae dolores ex ea
-        aut rerum explicabo quia, blanditiis cum, odio reprehenderit ratione
-        officiis, consectetur asperiores modi a tempora vel! Veniam quam iusto
-        ipsa recusandae repellat laborum esse incidunt neque, ad nisi unde
-        voluptate non dolorum quae officiis nihil harum fugiat aliquam ullam
-        distinctio cum quas sint. Consequatur fugit impedit sint, non nemo
-        deleniti aut est eaque? Deleniti voluptatum consequatur modi repellat.
-        Sunt, error, iure ex dolore necessitatibus aliquid porro omnis accusamus
-        explicabo tenetur sint veritatis quia placeat possimus atque eos labore
-        voluptates nisi laboriosam iusto reiciendis. Non labore architecto
-        eaque. Saepe, nam voluptate? Ea illum facere quo autem numquam,
-        quibusdam, facilis nobis a iusto nisi labore ratione eos harum fugit aut
-        quae ipsam molestiae minima voluptatum quis dolorum. Fuga impedit ab
-        eligendi, velit omnis voluptatibus ipsam labore pariatur neque voluptate
-        placeat iusto quisquam adipisci doloribus ipsum, quam officiis sit
-        illum! Hic, repellat cum? Quibusdam, labore vero cupiditate distinctio
-        doloribus totam id! Temporibus dolor nostrum illum ad ullam nobis
-        inventore saepe, placeat at iste ratione laudantium aut labore alias
-        maiores sit itaque accusamus pariatur iusto doloribus dignissimos
-        perspiciatis, praesentium eveniet? Quo distinctio, quas nesciunt
-        voluptatem tempora accusantium delectus quam eveniet consectetur facilis
-        perspiciatis placeat ullam facere qui reiciendis a voluptatum obcaecati,
-        deleniti impedit sit dignissimos iste officiis vitae omnis. Laboriosam
-        aspernatur quo consequuntur et iure corporis quidem culpa ad itaque vel,
-        quae voluptatem, odio deserunt eligendi amet porro ipsam saepe nemo
-        illo? Vero, necessitatibus. Veniam quibusdam doloribus, harum fugit
-        neque optio error odit non minus adipisci consequuntur atque tempore
-        ipsam omnis officia nemo commodi ratione nihil ab odio! Laboriosam
-        corporis beatae obcaecati repellendus architecto sint autem dolorem,
-        explicabo modi aspernatur! Illum voluptate dignissimos ratione debitis.
-        Perspiciatis repellendus est ea rem molestiae, perferendis facilis
-        tempore iusto labore in aspernatur ducimus sapiente molestias dolorum,
-        repudiandae natus expedita aut quia error! Minus corrupti consequuntur
-        cum ratione consequatur porro. Doloremque explicabo id dicta quam
-        cumque! Vitae saepe odit placeat error aliquid nisi fuga ipsam facere
-        odio voluptatibus ea blanditiis, voluptate, distinctio maiores a
-        molestiae similique eaque libero assumenda maxime? Quis, illo autem esse
-        porro ab ex nulla earum ipsam error beatae quibusdam quos aliquam odit
-        tempora non magnam quo maiores officia? Eius rem voluptatem veniam
-        aliquam incidunt mollitia doloribus perferendis rerum illo recusandae
-        consequatur blanditiis explicabo quasi sapiente deleniti ex ut beatae
-        fugit, laudantium dolor cum corporis sunt dolorum alias? Eos, animi
-        dolorum, reiciendis eum ipsa optio sequi facilis, quis architecto dolor
-        eligendi sunt impedit quia est fuga dolores! Nihil nam dolore architecto
-        exercitationem voluptatum! Repellendus debitis id sunt reiciendis
-        nesciunt, et sed aliquid voluptatum provident fugit repellat, ducimus
-        quidem, tempore accusantium neque placeat atque quaerat? Suscipit
-        laudantium assumenda, quisquam obcaecati tempore voluptate repellendus
-        inventore a error earum mollitia ipsum reprehenderit maxime illum.
-        Minima recusandae suscipit molestias quia maxime porro ipsa? Illum
-        ducimus eaque quos ex doloribus totam provident numquam quod, ad magni
-        odio recusandae, explicabo ea eveniet. Temporibus deleniti, incidunt
-        ratione illo aspernatur enim repudiandae voluptates, recusandae ad
-        impedit earum accusamus facilis dolores quas nostrum et itaque culpa
-        neque inventore exercitationem corporis. Reiciendis nostrum culpa
-        reprehenderit veritatis beatae alias assumenda eos quas molestiae nobis
-        maxime soluta nulla porro ab voluptate incidunt, a laboriosam autem
-        neque qui. Dolorem aperiam exercitationem voluptatibus est provident
-        inventore, maiores nihil necessitatibus consectetur laborum excepturi
-        molestias voluptates illo vero dolor itaque blanditiis. Porro, aut
-        tenetur aliquam, alias quo ex dolorem dolore ducimus quam quod veritatis
-        explicabo? Dignissimos fuga modi vel veniam dolores quas architecto,
-        eligendi totam odit, in nihil deserunt delectus aut aspernatur debitis
-        qui sint consequatur minus repellendus corrupti voluptatum laboriosam
-        voluptatem, provident dolorum. Cumque non accusantium ipsa temporibus,
-        aperiam nostrum! Recusandae nulla, illo facilis cumque sapiente minima
-        ad aperiam consequuntur veniam omnis explicabo tempora provident odio
-        voluptate doloribus adipisci eum aspernatur in similique quisquam!
-        Assumenda ipsa labore, esse dolor facere, sed illo placeat voluptatibus
-        soluta minus eveniet. Cumque eos aperiam alias vero a asperiores
-        repellendus reiciendis iste consectetur, dicta ipsum provident hic,
-        accusamus officiis, cum doloribus. Praesentium, odio sequi commodi
-        officia libero quis, adipisci consectetur aliquam eum explicabo, eveniet
-        nemo voluptates? Voluptas aperiam explicabo eius molestiae dolore
-        reiciendis necessitatibus facilis porro quod accusamus nihil culpa ipsa
-        maxime eum tempora perferendis, nulla magnam quibusdam id. Ipsum veniam
-        totam illo mollitia architecto error, odit, sequi maxime delectus ipsa,
-        omnis eveniet beatae ipsam magni vero eaque ullam tempora fugiat? Iusto
-        culpa, quas sunt nemo quisquam animi et vero maxime saepe tenetur dicta
-        ratione ipsum beatae. Sed rem debitis placeat maiores ratione quod,
-        optio ex, cumque, corporis voluptatem distinctio doloremque. Debitis
-        aliquam odit alias quas libero qui dolore! Voluptate, vitae et. Nam
-        velit ullam tempore molestias? Nemo culpa optio consequatur laborum.
-        Explicabo odit saepe illum expedita neque culpa laboriosam placeat,
-        officiis blanditiis hic molestias eos iure animi accusantium nostrum
-        esse cumque omnis ad! Tempore, nostrum enim! Sapiente distinctio odio
-        autem adipisci maiores hic eaque illum itaque velit! Voluptates itaque
-        obcaecati maxime nisi magni, consequuntur quod veniam voluptatibus
-        veritatis aliquam iste. Ratione quam eligendi pariatur repudiandae
-        similique eveniet eaque unde ut minus ab reprehenderit, voluptatum sunt
-        eum debitis officiis atque nisi numquam! Dolor, perferendis illum?
+        {/*  left message */}
+        {activeChatName?.status == "single"
+          ? msglist.map((item, i) =>
+              item.whosendid == user.uid ? (
+                item.message ? (
+                  <div className="right-msg" key={i}>
+                    <div className="right-text">
+                      <p>{item.message}</p>
+                    </div>
+                    <p className="right-time">
+                      {moment(item.date, "DDMMYYYY ss:mm:hh").fromNow()}
+                    </p>
+                  </div>
+                ) : (
+                  "img"
+                )
+              ) : item.message ? (
+                <div className="left-msg" key={i}>
+                  <div className="left-text">
+                    <p>{item.message}</p>
+                  </div>
+                  <p className="left-time">
+                    {moment(item.date, "DDMMYYYY ss:mm:hh").fromNow()}
+                  </p>
+                </div>
+              ) : (
+                "img"
+              )
+            )
+          : "grp Msg"}
+        {/* <div className="left-msg">
+          <div className="left-text">
+            <p>hi</p>
+          </div>
+          <p className="left-time">Today, 2:01pm</p>
+        </div> */}
+        {/* Left Img */}
+        {/* <div className="left-msg">
+          <div className="left-img">
+            <picture>
+              <ModalImage
+                small={
+                  "https://images.pexels.com/photos/16388789/pexels-photo-16388789.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load"
+                }
+                medium={
+                  "https://images.pexels.com/photos/16388789/pexels-photo-16388789.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load"
+                }
+                large={
+                  "https://images.pexels.com/photos/16388789/pexels-photo-16388789.jpeg?auto=compress&cs=tinysrgb&w=1600&lazy=load"
+                }
+              />
+            </picture>
+            <p className="left-time">Today, 2:01pm</p>
+          </div>
+        </div> */}
+        {/* left Audio */}
+        {/* <div className="left-msg">
+          <audio className="right-audio" src="" controls></audio>
+          <p className="left-time">Today, 2:01pm</p>
+        </div> */}
+        {/* Left Video */}
+        {/* <div className="left-msg">
+          <video className="right-video" src="" controls></video>
+          <p className="left-time">Today, 2:01pm</p>
+        </div> */}
+        {/* Right Message */}
+        {/* <div className="right-msg">
+          <div className="right-text">
+            <p>hlw</p>
+          </div>
+          <p className="right-time">Today, 2:01pm</p>
+        </div> */}
+        {/* Right Img */}
+        {/* <div className="right-msg">
+          <div className="right-img">
+            <picture>
+              <ModalImage
+                small={
+                  "https://images.pexels.com/photos/341970/pexels-photo-341970.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                }
+                large={
+                  "https://images.pexels.com/photos/341970/pexels-photo-341970.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                }
+              />
+            </picture>
+            <p className="right-time">Today, 2:01pm</p>
+          </div>
+        </div> */}
+        {/* Right Audio */}
+        {/* <div className="right-msg">
+          <audio className="right-audio" src="" controls></audio>
+          <p className="right-time">Today, 2:01pm</p>
+        </div> */}
+        {/* Right Video */}
+        {/* <div className="right-msg">
+          <video className="right-video" src="" controls></video>
+          <p className="right-time">Today, 2:01pm</p>
+        </div>*/}
       </div>
+
       {/* Messages Bottom */}
       <Divider />
       <div className="message-bottom">
         <div className="message-center">
           <div className="message-inputs">
             <TextField
+              onKeyPress={(e) => handleKey(e)}
+              value={msg}
+              autoComplete="off"
+              onChange={(e) => setMsg(e.target.value)}
               hiddenLabel
               id="filled-hidden-label-small"
               type="text"
@@ -192,7 +252,7 @@ const Messages = () => {
             />
           </div>
           <div className="send-btn">
-            <Button variant="contained">
+            <Button variant="contained" onClick={() => handleMsg()}>
               <SendIcon />
             </Button>
           </div>

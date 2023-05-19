@@ -20,7 +20,12 @@ const Friends = () => {
     onValue(starCountRef, (snapshot) => {
       let frndarr = [];
       snapshot.forEach((item) => {
-        frndarr.push({ ...item.val(), ids: item.key });
+        if (
+          user.uid == item.val().reciverId ||
+          user.uid == item.val().senderId
+        ) {
+          frndarr.push({ ...item.val(), ids: item.key });
+        }
       });
       setFrndlist(frndarr);
     });

@@ -14,10 +14,12 @@ import {
   remove,
 } from "firebase/database";
 import Alert from "@mui/material/Alert";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import "../UserList/userlist.css";
 import "./../MsgGrp/msggrp.css";
 import "./msgFrnd.css";
+import { ActiveChat } from "../../Redux/Slice/ActiveChatSlice";
+
 const MsgFrnd = () => {
   const user = useSelector((users) => users.login.loggedin);
 
@@ -25,13 +27,20 @@ const MsgFrnd = () => {
   const [search, setSearch] = useState("");
   const storage = getStorage();
   const db = getDatabase();
+  const dispatch = useDispatch();
+  const activeChatName = useSelector((active) => active.ActiveChat.active);
 
   useEffect(() => {
     const starCountRef = ref(db, "Friends/");
     onValue(starCountRef, (snapshot) => {
       let grouplistarr = [];
       snapshot.forEach((item) => {
-        grouplistarr.push({ ...item.val(), ids: item.key });
+        if (
+          user.uid == item.val().reciverId ||
+          user.uid == item.val().senderId
+        ) {
+          grouplistarr.push({ ...item.val(), ids: item.key });
+        }
       });
       setGrouplist(grouplistarr);
     });
@@ -47,6 +56,31 @@ const MsgFrnd = () => {
     }
   });
 
+  // data send in redux
+  const handleActiveSingle = (item) => {
+    if (item.reciverId == user.uid) {
+      // localStorage.setItem("activeSingle", JSON.stringify(activeChatName));
+      dispatch(
+        ActiveChat({
+          status: "single",
+          id: item.senderId,
+          name: item.sendername,
+          photo: item.senderPhoto,
+        })
+      );
+    } else {
+      // localStorage.setItem("activeSingle", JSON.stringify(activeChatName));
+      dispatch(
+        ActiveChat({
+          status: "single",
+          id: item.reciverId,
+          name: item.recivername,
+          photo: item.profilePicture,
+        })
+      );
+    }
+    localStorage.setItem("activeSingle", JSON.stringify(activeChatName));
+  };
   return (
     <div className="grouplist home-item userlist">
       <div className="home-header">
@@ -101,7 +135,11 @@ const MsgFrnd = () => {
                 <p>this will next</p>
               </div>
               <div className="home-items-btn">
-                <Button variant="contained" size="small">
+                <Button
+                  variant="contained"
+                  size="small"
+                  onClick={() => handleActiveSingle(item)}
+                >
                   message
                 </Button>
               </div>
