@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./messages.css";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { AiOutlineCamera } from "react-icons/ai";
 import { AiOutlineLink } from "react-icons/ai";
+import { BsEmojiSmile } from "react-icons/bs";
 import SendIcon from "@mui/icons-material/Send";
 import { BiMicrophone } from "react-icons/bi";
 import { Divider, InputAdornment } from "@mui/material";
@@ -11,8 +12,18 @@ import SpeedDial from "@mui/material/SpeedDial";
 import SpeedDialIcon from "@mui/material/SpeedDialIcon";
 import SpeedDialAction from "@mui/material/SpeedDialAction";
 import Button from "@mui/material/Button";
-import ModalImage from "react-modal-image";
+import { ToastContainer, toast } from "react-toastify";
+import { AudioRecorder, useAudioRecorder } from "react-audio-voice-recorder";
+import {
+  getStorage,
+  ref as sref,
+  uploadBytesResumable,
+  getDownloadURL,
+  uploadBytes,
+} from "firebase/storage";
+import EmojiPicker from "emoji-picker-react";
 import { useSelector } from "react-redux";
+import { v4 as uuidv4 } from "uuid";
 import {
   getDatabase,
   ref,
@@ -22,11 +33,18 @@ import {
   remove,
 } from "firebase/database";
 import moment from "moment/moment";
+import ModalImage from "react-modal-image";
 
 const Messages = () => {
   const [msg, setMsg] = useState("");
+  const [audio, setAudio] = useState("");
+  const [blob, setBlob] = useState("");
   const [msglist, setMsglist] = useState([]);
+  const msgEnd = useRef(null);
+  const [emoji, setEmoji] = useState(false);
 
+  const file = useRef(null);
+  const storage = getStorage();
   const db = getDatabase();
   const activeChatName = useSelector((active) => active.ActiveChat.active);
   const user = useSelector((users) => users.login.loggedin);
@@ -34,12 +52,15 @@ const Messages = () => {
   const actions = [
     { icon: <AiOutlineCamera />, name: "Camera" },
     { icon: <BiMicrophone />, name: "Voice" },
-    { icon: <AiOutlineLink />, name: "File" },
+    {
+      icon: <AiOutlineLink onClick={() => file.current.click()} />,
+      name: "File",
+    },
   ];
 
   const handleMsg = () => {
     if (activeChatName.status == "single") {
-      if (msg != "") {
+      if (msg.trim().length !== 0) {
         set(push(ref(db, "singlemsg/")), {
           whosendname: user.displayName,
           whosendid: user.uid,
@@ -61,7 +82,10 @@ const Messages = () => {
       handleMsg();
     }
   };
-
+  //msg value filter
+  useEffect(() => {
+    msgEnd.current?.scrollIntoView();
+  }, [msglist]);
   //get all message
   useEffect(() => {
     const starCountRef = ref(db, "singlemsg/");
@@ -70,9 +94,9 @@ const Messages = () => {
       snapshot.forEach((item) => {
         if (
           (item.val().whosendid == user.uid &&
-            item.val().whoreciveid == activeChatName.id) ||
+            item.val().whoreciveid == activeChatName?.id) ||
           (item.val().whoreciveid == user.uid &&
-            activeChatName.id == item.val().whosendid)
+            activeChatName?.id == item.val().whosendid)
         ) {
           singlemsgarr.push(item.val());
         }
@@ -81,12 +105,76 @@ const Messages = () => {
     });
   }, [activeChatName?.id]);
 
+  // image upload
+
+  const handleImageUpload = (e) => {
+    const storage = getStorage();
+    console.log(e.target.files[0]);
+    const storageRef = sref(
+      storage,
+      `Single Message Image/${e.target.files[0].name}`
+    );
+
+    const uploadTask = uploadBytesResumable(storageRef, e.target.files[0]);
+
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        console.log("Upload is " + progress + "% done");
+      },
+      (error) => {
+        console.log(error.message);
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          set(push(ref(db, "singlemsg/")), {
+            whosendname: user.displayName,
+            whosendid: user.uid,
+            img: downloadURL,
+            whoreciveid: activeChatName.id,
+            whorecivename: activeChatName.name,
+            date: `${new Date().getDate()}-${
+              new Date().getMonth() + 1
+            }-${new Date().getFullYear()} : ${new Date().getSeconds()}:${new Date().getMinutes()}:${new Date().getHours()}`,
+          });
+        });
+      }
+    );
+  };
+  // Audio
+  const addAudioElement = (blob) => {
+    const url = URL.createObjectURL(blob);
+    const storageRef = sref(storage, `Single Message Audio/${url}`);
+    uploadBytes(storageRef, blob).then((snapshot) => {
+      getDownloadURL(storageRef).then((downloadURL) => {
+        set(push(ref(db, "singlemsg/")), {
+          whosendname: user.displayName,
+          whosendid: user.uid,
+          audio: downloadURL,
+          whoreciveid: activeChatName.id,
+          whorecivename: activeChatName.name,
+          date: `${new Date().getDate()}-${
+            new Date().getMonth() + 1
+          }-${new Date().getFullYear()} : ${new Date().getSeconds()}:${new Date().getMinutes()}:${new Date().getHours()}`,
+        });
+      });
+    });
+  };
+  //handleEmoje
+  const handleEmoje = ({ emoji }) => {
+    setMsg(msg + emoji);
+  };
+
   return (
     <div className="messages-wrapper">
       {/* Message Top */}
+      <ToastContainer />
       <div className="message-top">
         <div className="top-info">
           <div className="top-img">
+            <input type="file" hidden ref={file} />
             <picture>
               <img
                 src={activeChatName?.photo || "../img/avatar-login.webp"}
@@ -119,8 +207,32 @@ const Messages = () => {
                       {moment(item.date, "DDMMYYYY ss:mm:hh").fromNow()}
                     </p>
                   </div>
+                ) : item.img ? (
+                  <div className="right-msg" key={i}>
+                    <div className="right-img">
+                      <picture>
+                        <ModalImage
+                          small={item.img}
+                          medium={item.img}
+                          large={item.img}
+                        />
+                      </picture>
+                      <p className="right-time">
+                        {moment(item.date, "DDMMYYYY ss:mm:hh").fromNow()}
+                      </p>
+                    </div>
+                  </div>
                 ) : (
-                  "img"
+                  <div className="right-msg" key={i}>
+                    <audio
+                      className="right-audio"
+                      src={item.audio}
+                      controls
+                    ></audio>
+                    <p className="left-time">
+                      {moment(item.date, "DDMMYYYY ss:mm:hh").fromNow()}
+                    </p>
+                  </div>
                 )
               ) : item.message ? (
                 <div className="left-msg" key={i}>
@@ -131,11 +243,36 @@ const Messages = () => {
                     {moment(item.date, "DDMMYYYY ss:mm:hh").fromNow()}
                   </p>
                 </div>
+              ) : item.img ? (
+                <div className="left-msg" key={i}>
+                  <div className="left-img">
+                    <picture>
+                      <ModalImage
+                        small={item.img}
+                        medium={item.img}
+                        large={item.img}
+                      />
+                    </picture>
+                    <p className="left-time">
+                      {moment(item.date, "DDMMYYYY ss:mm:hh").fromNow()}
+                    </p>
+                  </div>
+                </div>
               ) : (
-                "img"
+                <div className="left-msg">
+                  <audio
+                    className="right-audio"
+                    src={item.audio}
+                    controls
+                  ></audio>
+                  <p className="left-time">
+                    {moment(item.date, "DDMMYYYY ss:mm:hh").fromNow()}
+                  </p>
+                </div>
               )
             )
           : "grp Msg"}
+        <div ref={msgEnd} />
         {/* <div className="left-msg">
           <div className="left-text">
             <p>hi</p>
@@ -211,6 +348,19 @@ const Messages = () => {
       <div className="message-bottom">
         <div className="message-center">
           <div className="message-inputs">
+            <div
+              className="emojis"
+              onMouseEnter={() => {
+                setEmoji(true);
+              }}
+              onMouseLeave={() => {
+                setEmoji(false);
+              }}
+            >
+              {emoji && (
+                <EmojiPicker emojiStyle="facebook" onEmojiClick={handleEmoje} />
+              )}
+            </div>
             <TextField
               onKeyPress={(e) => handleKey(e)}
               value={msg}
@@ -226,6 +376,18 @@ const Messages = () => {
                 disableUnderline: true,
                 endAdornment: (
                   <InputAdornment position="end">
+                    <BsEmojiSmile
+                      className="emoji-icon"
+                      onMouseEnter={() => {
+                        setEmoji(true);
+                      }}
+                      onMouseLeave={() => {
+                        setEmoji(false);
+                      }}
+                    />
+                    <AudioRecorder
+                      onRecordingComplete={(blob) => addAudioElement(blob)}
+                    />
                     <SpeedDial
                       className="speeddile"
                       ariaLabel="SpeedDial basic example"
@@ -252,6 +414,7 @@ const Messages = () => {
             />
           </div>
           <div className="send-btn">
+            <input type="file" hidden ref={file} onChange={handleImageUpload} />
             <Button variant="contained" onClick={() => handleMsg()}>
               <SendIcon />
             </Button>

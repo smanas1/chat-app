@@ -201,3 +201,24 @@
   margin-top: 10px;
   border-radius: 10px;
 }
+
+.audio-recorder {
+  right: 60px;
+  position: absolute;
+}
+.emoji-icon {
+  margin-left: -135px;
+  height: 25px !important;
+  width: 25px !important;
+  cursor: pointer;
+}
+.emoji-icon svg {
+  height: 20px !important;
+  width: 20px !important;
+}
+.emojis {
+  z-index: 10;
+  position: absolute;
+  right: 200px;
+  bottom: 100px;
+}
